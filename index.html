@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل مدیریت گالری سما زرین | Sama Zarrin</title>
+    <title>پنل مدیریت حرفه‌ای سما زرین | Sama Zarrin</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { 
@@ -15,55 +15,79 @@
 </head>
 <body class="p-4 md:p-8 bg-[#f4f4f6]">
 
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-6xl mx-auto">
         <header class="text-center mb-8 border-b pb-6 border-gray-200">
             <h1 class="text-3xl font-light tracking-wide text-stone-800 uppercase">SAMA ZARRIN</h1>
-            <p class="text-xs text-stone-500 mt-1 tracking-widest">مدیریت محصولات و اتصال به تابان‌گوهر</p>
+            <p class="text-xs text-stone-500 mt-1 tracking-widest">پنل پیشرفته با قابلیت شخصی‌سازی عیار، سود و مالیات</p>
             <div class="mt-4 px-4 py-1.5 bg-white shadow-sm rounded-full inline-flex items-center gap-2 border border-gray-100 text-sm text-stone-600">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>نرخ زنده طلای ۱۸ عیار بازار:</span> 
-                <span id="live-gold-rate" class="font-bold text-stone-800">۳,۶۵۰,۰۰۰</span> تومان
+                <span>نرخ مبنای طلای ۱۸ عیار بازار:</span> 
+                <span id="live-gold-rate" class="font-bold text-stone-800">۱۶,۲۰۰,۰۰۰</span> تومان
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 class="text-lg font-medium mb-5 text-stone-800 border-b pb-2 border-gray-50">➕ ثبت طلا جدید</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
+                <h2 class="text-lg font-medium mb-5 text-stone-800 border-b pb-2 border-gray-50">➕ ثبت طلا با مشخصات دلخواه</h2>
                 <form id="gold-form" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-stone-500 mb-1">نام جواهر</label>
-                        <input type="text" id="title" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" placeholder="مثال: انگشتر کارتیه سما" required>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">نام جواهر</label>
+                            <input type="text" id="title" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" placeholder="مثال: النگو آینه ای سما" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">عیار طلا</label>
+                            <select id="gold-karat" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm">
+                                <option value="18">۱۸ عیار (۷۵۰)</option>
+                                <option value="24">۲۴ عیار (شمش / سکه)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-stone-500 mb-1">وزن (گرم)</label>
                             <input type="number" step="0.001" id="weight" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" placeholder="0.00" required>
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-stone-500 mb-1">اجرت (٪)</label>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">اجرت ساخت (٪)</label>
                             <input type="number" id="wage" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" placeholder="18" required>
                         </div>
+                        <div>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">سود گالری (٪)</label>
+                            <input type="number" id="profit-rate" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" value="7" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-stone-500 mb-1">تصویر طلا</label>
-                        <input type="file" id="image" accept="image/*" class="w-full text-xs text-stone-500">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">مالیات بر ارزش افزوده (٪)</label>
+                            <input type="number" id="tax-rate" class="w-full bg-stone-50 p-3 rounded-xl text-stone-800 border border-stone-200 focus:outline-none focus:border-stone-400 text-sm" value="9" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-stone-500 mb-1">تصویر کالا</label>
+                            <input type="file" id="image" accept="image/*" class="w-full text-xs text-stone-500 pt-2">
+                        </div>
                     </div>
-                    <button type="button" onclick="addProduct()" class="w-full bg-stone-900 text-white font-medium py-3 rounded-xl hover:bg-stone-800 transition text-sm shadow-sm">ثبت و ذخیره در لیست</button>
+
+                    <button type="button" onclick="addProduct()" class="w-full bg-stone-900 text-white font-medium py-3 rounded-xl hover:bg-stone-800 transition text-sm shadow-sm">ثبت و محاسبه سفارشی</button>
                 </form>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 class="text-lg font-medium mb-5 text-stone-400 border-b pb-2 border-gray-50">👀 پیش‌نمایش مشتری</h2>
-                <div class="border border-stone-100 rounded-2xl p-4 bg-stone-50/50 text-center">
-                    <div id="preview-img-container" class="w-full h-40 bg-stone-100 rounded-xl mb-4 flex items-center justify-center text-xs text-stone-400">تصویر کالا</div>
-                    <h3 id="preview-title" class="text-base font-medium text-stone-800">نام کالا</h3>
-                    <p class="text-xs text-stone-500 mt-1">وزن: <span id="preview-weight">۰</span> گرم</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-medium mb-5 text-stone-400 border-b pb-2 border-gray-50">👀 فاکتور مشتری</h2>
+                    <div class="border border-stone-100 rounded-2xl p-4 bg-stone-50/50 text-center">
+                        <div id="preview-img-container" class="w-full h-36 bg-stone-100 rounded-xl mb-4 flex items-center justify-center text-xs text-stone-400">تصویر کالا</div>
+                        <h3 id="preview-title" class="text-base font-medium text-stone-800">نام کالا</h3>
+                        <p class="text-xs text-stone-500 mt-1">وزن: <span id="preview-weight">۰</span> گرم | عیار: <span id="preview-karat">۱۸</span></p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-lg font-medium mb-5 text-stone-800 border-b pb-2 border-gray-50">📦 لیست طلاهای گالری شما (<span id="total-count">۰</span>)</h2>
+            <h2 class="text-lg font-medium mb-5 text-stone-800 border-b pb-2 border-gray-50">📦 لیست طلاهای Sama Zarrin (<span id="total-count">۰</span>)</h2>
             <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <p class="text-sm text-stone-400 text-center col-span-full py-4">هنوز هیچ طلایی اضافه نکرده‌اید.</p>
             </div>
@@ -71,20 +95,95 @@
     </div>
 
     <script>
-       // قیمت واقعی امروز بازار را به عنوان نرخ پایه قرار می‌دهیم
-let currentGoldPrice = 16200000; 
-const PROFIT_PERCENT = 7; 
-const TAX_PERCENT = 9;    
+        let currentGoldPrice = 16200000; 
+        let myProducts = []; 
 
-// شبیه‌ساز اتصال به تابان‌گوهر با نرخ‌های جدید
-async function fetchLivePrice() {
-    // نوسان طبیعی بازار حول و حوش ۱۶ میلیون تومان
-    const randomFluctuation = (Math.random() - 0.5) * 20000; 
-    currentGoldPrice = Math.round(16200000 + randomFluctuation);
-    document.getElementById('live-gold-rate').innerText = currentGoldPrice.toLocaleString('fa-IR');
-    renderProducts(); 
-}
- 
+        async function fetchLivePrice() {
+            const randomFluctuation = (Math.random() - 0.5) * 20000; 
+            currentGoldPrice = Math.round(16200000 + randomFluctuation);
+            document.getElementById('live-gold-rate').innerText = currentGoldPrice.toLocaleString('fa-IR');
+            renderProducts(); 
+        }
+        setInterval(fetchLivePrice, 8000);
+
+        function addProduct() {
+            const title = document.getElementById('title').value;
+            const karat = parseInt(document.getElementById('gold-karat').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const wage = parseFloat(document.getElementById('wage').value);
+            const profit = parseFloat(document.getElementById('profit-rate').value);
+            const tax = parseFloat(document.getElementById('tax-rate').value);
+
+            if(!title || isNaN(weight) || isNaN(wage) || isNaN(profit) || isNaN(tax)) {
+                alert("لطفاً همه فیلدها را پر کنید.");
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(), 
+                title: title,
+                karat: karat,
+                weight: weight,
+                wage: wage,
+                profit: profit,
+                tax: tax
+            };
+
+            myProducts.push(newProduct);
+            renderProducts(); 
+            
+            // بازگرداندن مقادیر پیش‌فرض سود و مالیات بعد از ریست
+            document.getElementById('gold-form').reset();
+            document.getElementById('profit-rate').value = 7;
+            document.getElementById('tax-rate').value = 9;
+        }
+
+        function deleteProduct(id) {
+            myProducts = myProducts.filter(product => product.id !== id);
+            renderProducts(); 
+        }
+
+        function renderProducts() {
+            const listContainer = document.getElementById('products-list');
+            document.getElementById('total-count').innerText = myProducts.length;
+
+            if(myProducts.length === 0) {
+                listContainer.innerHTML = `<p class="text-sm text-stone-400 text-center col-span-full py-4">هنوز هیچ طلایی اضافه نکرده‌اید.</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = ''; 
+
+            myProducts.forEach(prod => {
+                // فرمول بر اساس عیار انتخابی (طلای ۱۸ عیار مبنای بازار است، عیار ۲۴ ضریب بیشتری می‌گیرد)
+                const karatMultiplier = prod.karat === 24 ? (24 / 18) : 1;
+                const rawPrice = prod.weight * (currentGoldPrice * karatMultiplier);
+                
+                const wageAmount = rawPrice * (prod.wage / 100);
+                const priceWithWage = rawPrice + wageAmount;
+                const profitAmount = priceWithWage * (prod.profit / 100);
+                const taxAmount = (priceWithWage + profitAmount) * (prod.tax / 100);
+                
+                const finalPrice = Math.round(priceWithWage + profitAmount + taxAmount);
+
+                listContainer.innerHTML += `
+                    <div class="border border-stone-100 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-medium text-stone-900 text-sm">${prod.title}</h3>
+                                <span class="text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">${prod.karat} عیار</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-2">وزن: ${prod.weight} گرم | اجرت: ${prod.wage}٪</p>
+                            <p class="text-xs text-stone-400">سود: ${prod.profit}٪ | مالیات: ${prod.tax}٪</p>
+                            <p class="text-sm font-semibold text-stone-800 mt-3">${finalPrice.toLocaleString('fa-IR')} <span class="text-xs font-normal text-stone-500">تومان</span></p>
+                        </div>
+                        <button onclick="deleteProduct(${prod.id})" class="mt-4 w-full bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-medium py-2 rounded-lg transition">
+                            🗑️ حذف این طلا
+                        </button>
+                    </div>
+                `;
+            });
+        }
     </script>
 </body>
 </html>
