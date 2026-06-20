@@ -68,14 +68,14 @@
         <!-- هدر لوکس سایت با ته‌رنگ طلایی و آبی تیفانی روشن -->
         <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-[#b89327]/20 mb-8 gap-4 pl-14">
             <div class="text-right">
-                <h1 class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-sm">SAMA ZARRIN</h1>
+                <h1 class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-md">SAMA ZARRIN</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <p id="user-welcome" class="text-xs text-stone-700"></p>
                     <span id="vip-badge" class="hidden bg-amber-500/20 border border-amber-500 text-amber-700 text-[10px] px-2 py-0.5 rounded-full font-bold">VIP 👑</span>
                 </div>
             </div>
             
-            <div class="bg-white/80 border border-[#b89327]/30 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm backdrop-blur-sm">
+            <div class="bg-white/80 border border-[#b89327]/30 rounded-2xl p-3.5 flex items-center gap-3 shadow-md backdrop-blur-sm">
                 <div class="text-right">
                     <label class="block text-[10px] font-bold text-[#a68015] mb-1">نرخ امروز ۱ گرم طلای ۱۸ عیار (تومان):</label>
                     <input type="text" id="gold-rate-input" oninput="handleGoldRateChange(this)" value="16,135,500" class="bg-stone-50 text-[#a68015] px-3 py-1.5 rounded-xl border border-[#b89327]/20 text-sm font-mono text-center w-44 focus:outline-none focus:ring-1 focus:ring-[#b89327]" dir="ltr">
@@ -176,12 +176,37 @@
             </div>
         </div>
 
-        <!-- مودال درباره ما -->
+        <!-- ℹ️ مودال درباره ما به همراه راه‌های ارتباطی -->
         <div id="about-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div class="bg-white border border-[#b89327]/30 p-6 rounded-3xl max-w-md w-full text-right space-y-4 shadow-2xl">
+            <div class="bg-white border border-[#b89327]/30 p-6 rounded-3xl max-w-md w-full text-right space-y-5 shadow-2xl">
                 <h3 class="text-lg font-medium text-[#a68015]">درباره گالری سما زرین</h3>
-                <p class="text-xs text-stone-600 leading-relaxed">گالری سما زرین ارائه‌دهنده لوکس‌ترین و ظریف‌ترین طلاهای مینیمال ۱۸ عیار است.</p>
-                <button onclick="closeAboutUs()" class="w-full bg-stone-900 text-white text-xs py-2.5 rounded-xl hover:bg-black cursor-pointer">بستن پنجره</button>
+                <p class="text-xs text-stone-600 leading-relaxed">گالری سما زرین ارائه‌دهنده لوکس‌ترین و ظریف‌ترین طلاهای مینیمال ۱۸ عیار است. ما در تلاشیم تا زیبایی و سادگی را در قالب قطعاتی ماندگار به شما هدیه دهیم.</p>
+                
+                <div class="border-t border-stone-100 pt-4 space-y-3">
+                    <h4 class="text-xs font-bold text-[#a68015]">📱 شبکه‌های اجتماعی و ارتباط با ما:</h4>
+                    
+                    <div class="flex flex-col gap-2">
+                        <!-- دکمه اینستاگرام -->
+                        <a href="https://www.instagram.com/sama_zarinn?igsh=MTB4ZW1iY2VzZ255aA==" target="_blank" class="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 border border-pink-200 text-pink-700 text-xs font-medium hover:scale-[1.02] transition-transform">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                                دنبال کردن در اینستاگرام
+                            </span>
+                            <span dir="ltr" class="font-mono text-[10px] text-pink-600 opacity-80">@sama_zarinn</span>
+                        </a>
+
+                        <!-- دکمه تلگرام -->
+                        <a href="https://t.me/sama_zarinn" target="_blank" class="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 text-blue-700 text-xs font-medium hover:scale-[1.02] transition-transform">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0011.944 0zm5.556 8.16l-1.896 8.93c-.144.636-.522.792-1.056.492l-2.89-2.13-1.394 1.342c-.154.154-.284.284-.582.284l.206-2.93 5.334-4.82c.232-.206-.05-.32-.36-.114l-6.594 4.15-2.84-.89c-.616-.192-.628-.616.13-.91l11.1-4.28c.513-.192.96.114.748.924z"/></svg>
+                                عضویت در کانال تلگرام
+                            </span>
+                            <span dir="ltr" class="font-mono text-[10px] text-blue-600 opacity-80">@sama_zarinn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <button onclick="closeAboutUs()" class="w-full bg-stone-900 text-white text-xs py-2.5 rounded-xl hover:bg-black cursor-pointer shadow-md">بستن پنجره</button>
             </div>
         </div>
     </div>
