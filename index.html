@@ -71,86 +71,20 @@
     </div>
 
     <script>
-        let currentGoldPrice = 3650000; 
-        const PROFIT_PERCENT = 7; 
-        const TAX_PERCENT = 9;    
-        let myProducts = []; // آرایه ذخیره موقت طلاها
+       // قیمت واقعی امروز بازار را به عنوان نرخ پایه قرار می‌دهیم
+let currentGoldPrice = 16200000; 
+const PROFIT_PERCENT = 7; 
+const TAX_PERCENT = 9;    
 
-        // شبیه‌ساز دریافت قیمت تابان‌گوهر
-        async function fetchLivePrice() {
-            const randomFluctuation = (Math.random() - 0.5) * 5000; 
-            currentGoldPrice = Math.round(3650000 + randomFluctuation);
-            document.getElementById('live-gold-rate').innerText = currentGoldPrice.toLocaleString('fa-IR');
-            renderProducts(); // با تغییر قیمت تابان‌گوهر، قیمت کل لیست هم اتوماتیک آپدیت می‌شود
-        }
-        setInterval(fetchLivePrice, 8000);
-
-        // تابع ثبت و اضافه کردن طلا به لیست
-        function addProduct() {
-            const title = document.getElementById('title').value;
-            const weight = parseFloat(document.getElementById('weight').value);
-            const wage = parseFloat(document.getElementById('wage').value);
-
-            if(!title || isNaN(weight) || isNaN(wage)) {
-                alert("لطفاً همه فیلدها را پر کنید.");
-                return;
-            }
-
-            const newProduct = {
-                id: Date.now(), // یک شناسه اختصاصی برای هر طلا
-                title: title,
-                weight: weight,
-                wage: wage
-            };
-
-            myProducts.push(newProduct);
-            renderProducts(); // رندر مجدد لیست برای نمایش طلای جدید
-            
-            // ریست کردن فرم بعد از ثبت
-            document.getElementById('gold-form').reset();
-        }
-
-        // 🔴 تابع اصلی برای پاک کردن طلا بر اساس شناسه (ID)
-        function deleteProduct(id) {
-            // حذف طلا از لیست با فیلتر کردن
-            myProducts = myProducts.filter(product => product.id !== id);
-            renderProducts(); // آپدیت کردن ظاهر سایت بعد از حذف
-        }
-
-        // تابع نمایش محصولات در سایت
-        function renderProducts() {
-            const listContainer = document.getElementById('products-list');
-            document.getElementById('total-count').innerText = myProducts.length;
-
-            if(myProducts.length === 0) {
-                listContainer.innerHTML = `<p class="text-sm text-stone-400 text-center col-span-full py-4">هنوز هیچ طلایی اضافه نکرده‌اید.</p>`;
-                return;
-            }
-
-            listContainer.innerHTML = ''; // خالی کردن لیست قبلی
-
-            myProducts.forEach(prod => {
-                // فرمول محاسبه قیمت هر طلا بر اساس نرخ ثانیه‌ای تابان‌گوهر
-                const rawPrice = prod.weight * currentGoldPrice;
-                const wageAmount = rawPrice * (prod.wage / 100);
-                const profitAmount = (rawPrice + wageAmount) * (PROFIT_PERCENT / 100);
-                const taxAmount = (wageAmount + profitAmount) * (TAX_PERCENT / 100);
-                const finalPrice = Math.round(rawPrice + wageAmount + profitAmount + taxAmount);
-
-                listContainer.innerHTML += `
-                    <div class="border border-stone-100 rounded-xl p-4 bg-stone-50/50 flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-medium text-stone-900 text-sm">${prod.title}</h3>
-                            <p class="text-xs text-stone-500 mt-1">وزن: ${prod.weight} گرم | اجرت: ${prod.wage}٪</p>
-                            <p class="text-sm font-semibold text-stone-800 mt-3">${finalPrice.toLocaleString('fa-IR')} <span class="text-xs font-normal text-stone-500">تومان</span></p>
-                        </div>
-                        <button onclick="deleteProduct(${prod.id})" class="mt-4 w-full bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-medium py-2 rounded-lg transition">
-                            🗑️ حذف این طلا
-                        </button>
-                    </div>
-                `;
-            });
-        }
+// شبیه‌ساز اتصال به تابان‌گوهر با نرخ‌های جدید
+async function fetchLivePrice() {
+    // نوسان طبیعی بازار حول و حوش ۱۶ میلیون تومان
+    const randomFluctuation = (Math.random() - 0.5) * 20000; 
+    currentGoldPrice = Math.round(16200000 + randomFluctuation);
+    document.getElementById('live-gold-rate').innerText = currentGoldPrice.toLocaleString('fa-IR');
+    renderProducts(); 
+}
+ 
     </script>
 </body>
 </html>
