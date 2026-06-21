@@ -73,7 +73,10 @@
             
             <div class="bg-white/30 border border-white/40 rounded-2xl p-3.5 flex items-center gap-3 shadow-md backdrop-blur-md">
                 <div class="text-right">
-                    <label class="block text-[10px] font-bold text-[#a68015] mb-1">نرخ امروز ۱ گرم طلای ۱۸ عیار (تومان):</label>
+                    <label class="block text-[10px] font-bold text-[#a68015] mb-1 flex items-center gap-1">
+                        نرخ لحظه‌ای ۱ گرم طلای ۱۸ عیار (تومان):
+                        <span id="rate-trend-indicator" class="text-xs transition-all duration-300"></span>
+                    </label>
                     <input type="text" id="gold-rate-input" oninput="handleGoldRateChange(this)" value="16,135,500" class="bg-white/40 text-[#a68015] px-3 py-1.5 rounded-xl border border-white/20 text-sm font-mono text-center w-44 focus:outline-none focus:ring-1 focus:ring-[#b89327]" dir="ltr">
                 </div>
             </div>
@@ -181,7 +184,6 @@
                 
                 <div class="border-t border-black/5 pt-4 space-y-3">
                     <h4 class="text-xs font-bold text-[#a68015]">📱 شبکه‌های اجتماعی و ارتباط با ما:</h4>
-                    
                     <div class="flex flex-col gap-2">
                         <a href="https://www.instagram.com/sama_zarinn?igsh=MTB4ZW1iY2VzZ255aA==" target="_blank" class="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-purple-50/60 to-pink-50/60 border border-pink-300 text-pink-700 text-xs font-medium hover:scale-[1.02] transition-transform backdrop-blur-sm">
                             <span class="flex items-center gap-2">
@@ -220,7 +222,9 @@
         ];
 
         let currentFilter = 'all';
-        let selectedImageBase64 = ""; // متغیر برای ذخیره موقت کد عکس انتخابی از گالری
+        let selectedImageBase64 = ""; 
+        let previousGoldRate = 16135500; // ذخیره نرخ قبلی برای مقایسه روند صعودی/نزولی
+        let currentTrend = ""; // وضعیت روند: up یا down یا ""
 
         function toggleMenu() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
         function logout() { localStorage.removeItem('sama_user'); location.reload(); }
@@ -238,11 +242,9 @@
             }
         }
 
-        // تابع خواندن فایل از گالری و تبدیل به Base64
         function handleFileSelect(input) {
             const file = input.files[0];
             if (file) {
-                // بررسی حجم فایل (اختیاری: جهت بهینه‌سازی حافظه مرورگر بهتره عکس خیلی سنگین نباشد)
                 if (file.size > 2 * 1024 * 1024) { 
                     alert("❌ لطفاً عکسی با حجم کمتر از ۲ مگابایت انتخاب کنید.");
                     input.value = "";
@@ -284,25 +286,20 @@
                 allUsers.push(newUser);
                 localStorage.setItem('sama_registered_users', JSON.stringify(allUsers));
                 localStorage.setItem('sama_user', JSON.stringify(newUser));
-                
                 new Image().src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(`🆕 ثبت نام جدید در سایت:\n👤 نام: ${newUser.name}\n📱 شماره: ${phone}`)}`;
             }
-
             checkLoginState();
         }
 
         function activateVip() {
             let user = JSON.parse(localStorage.getItem('sama_user'));
             if(!user) return;
-
             if (user.purchases > 2) {
                 user.isVip = true;
                 localStorage.setItem('sama_user', JSON.stringify(user));
-                
                 let allUsers = JSON.parse(localStorage.getItem('sama_registered_users')) || [];
                 allUsers = allUsers.map(u => u.phone === user.phone ? { ...u, isVip: true } : u);
                 localStorage.setItem('sama_registered_users', JSON.stringify(allUsers));
-
                 alert("👑 تبریک! حساب شما به سطح VIP ارتقا یافت و ۲٪ سود کمتر روی اجناس فعال شد.");
                 closeVipModal();
                 location.reload();
@@ -311,14 +308,41 @@
             }
         }
 
+        // تابع به روزرسانی قیمت هوشمند (تغییرات نوسانی شبیه‌ساز هر ۵ ثانیه)
+        function startLiveGoldRate() {
+            setInterval(() => {
+                const inputElement = document.getElementById('gold-rate-input');
+                if(!inputElement) return;
+
+                const currentRate = parseInt(inputElement.value.replace(/[^0-9]/g, '')) || 16135500;
+                previousGoldRate = currentRate;
+
+                // ایجاد یک نوسان تصادفی بین منفی ۲۵,۰۰۰ تا مثبت ۲۵,۰۰۰ تومان مشابه بازار صراف
+                const change = (Math.floor(Math.random() * 50) - 25) * 1000; 
+                const newRate = Math.max(5000000, currentRate + change);
+
+                if(newRate > previousGoldRate) {
+                    currentTrend = "up";
+                    document.getElementById('rate-trend-indicator').innerHTML = "<span class='text-emerald-600 font-bold animate-pulse'>🔼</span>";
+                } else if(newRate < previousGoldRate) {
+                    currentTrend = "down";
+                    document.getElementById('rate-trend-indicator').innerHTML = "<span class='text-rose-600 font-bold animate-pulse'>🔽</span>";
+                } else {
+                    currentTrend = "";
+                    document.getElementById('rate-trend-indicator').innerHTML = "";
+                }
+
+                inputElement.value = newRate.toLocaleString('en-US');
+                updateAllPrices();
+            }, 5000); // زمانبندی ۵ ثانیه
+        }
+
         function addNewProduct(e) {
             e.preventDefault();
-            
             if(!selectedImageBase64) {
                 alert("❌ لطفا ابتدا یک عکس از گالری انتخاب کنید.");
                 return;
             }
-
             const newProd = {
                 id: Date.now(),
                 name: document.getElementById('prod-name').value,
@@ -328,14 +352,13 @@
                 discountPercent: parseInt(document.getElementById('prod-discount-input').value) || 0,
                 category: document.getElementById('prod-category').value,
                 isStock: document.getElementById('prod-stock').checked,
-                img: selectedImageBase64 // ذخیره مستقیم کد عکس گالری
+                img: selectedImageBase64
             };
-
             products.push(newProd);
             try {
                 localStorage.setItem('sama_products', JSON.stringify(products));
                 alert("✨ طلا با موفقیت اضافه شد!");
-                selectedImageBase64 = ""; // ریسیت کردن مقدار عکس بعد از ذخیره موفق
+                selectedImageBase64 = ""; 
                 document.getElementById('file-label-text').innerText = "🖼️ انتخاب عکس از گالری";
                 e.target.reset();
                 updateAllPrices();
@@ -370,6 +393,7 @@
         }
 
         function formatPrice(price) { return price.toLocaleString('fa-IR') + " تومان"; }
+        
         function handleGoldRateChange(input) {
             let value = input.value.replace(/[^0-9]/g, '');
             if (value === "") value = "0";
@@ -402,6 +426,14 @@
             filteredProducts.forEach(p => {
                 const finalPrice = calculateGoldPrice(p.weight, p.wagePercent, p.profitPercent, currentRate, isVip, p.discountPercent);
                 
+                // تعیین وضعیت آیکون نوسان قیمت روی کارت محصول
+                let cardTrendBadge = "";
+                if(currentTrend === "up") {
+                    cardTrendBadge = "<span class='text-emerald-600 ml-1 text-xs font-bold'>▲</span>";
+                } else if(currentTrend === "down") {
+                    cardTrendBadge = "<span class='text-rose-600 ml-1 text-xs font-bold'>▼</span>";
+                }
+
                 const card = `
                     <div class="bg-white/30 rounded-3xl overflow-hidden shadow-lg border border-white/20 hover:border-white/50 transition-all group backdrop-blur-sm">
                         <div class="h-64 bg-stone-200/50 relative overflow-hidden">
@@ -416,7 +448,7 @@
                             <h3 class="text-sm font-medium text-stone-900">${p.name}</h3>
                             <div class="flex justify-between items-center bg-white/40 p-2.5 rounded-xl border border-white/20">
                                 <span class="text-xs text-stone-600">قیمت نهایی روز:</span>
-                                <span class="text-sm font-bold text-[#a68015] font-mono">${formatPrice(finalPrice)}</span>
+                                <span class="text-sm font-bold text-[#a68015] font-mono flex items-center">${cardTrendBadge} ${formatPrice(finalPrice)}</span>
                             </div>
                             <a href="https://t.me/${MY_TELEGRAM_ID}?text=${encodeURIComponent('سلام، قصد سفارش محصول «' + p.name + '» را دارم.')}" target="_blank" class="block text-center w-full bg-[#b89327] text-white py-2.5 rounded-xl text-xs font-bold hover:bg-[#a68015] transition-colors shadow-sm">🛍️ مشاوره و خرید مستقیم</a>
                             ${isAdmin ? `<button onclick="deleteProduct(${p.id})" class="w-full bg-rose-50/50 text-rose-600 text-xs py-1.5 rounded-xl mt-2 hover:bg-rose-100/60 transition-colors">🗑️ حذف کالا</button>` : ''}
@@ -439,6 +471,7 @@
                 if (user.isVip) { document.getElementById('vip-badge').classList.remove('hidden'); }
                 if (user.role === 'admin') { document.getElementById('admin-panel').classList.remove('hidden'); }
                 updateAllPrices();
+                startLiveGoldRate(); // فعال کردن موتور به روزرسانی اتوماتیک نرخ ۵ ثانیه‌ای بعد از ورود به سایت
             }
         }
 
