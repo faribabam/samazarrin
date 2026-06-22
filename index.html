@@ -77,7 +77,7 @@
         </div>
 
         <!-- هدر بالایی ویترین -->
-        <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-stone-200 mb-8 gap-4 pl-14">
+        <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-stone-200 mb-6 gap-4 pl-14">
             <div class="text-right">
                 <h1 class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-sm">SAMA ZARRIN</h1>
                 <div class="flex items-center gap-2 mt-1">
@@ -96,6 +96,38 @@
                 </div>
             </div>
         </header>
+
+        <!-- 🔍 بخش جستجو و فیلترهای پیشرفته مشتری -->
+        <div class="bg-white border border-[#e5d5c5] rounded-2xl p-4 mb-8 shadow-sm text-right grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
+            <div>
+                <label class="block text-[11px] text-stone-500 font-medium mb-1.5">🔍 جستجوی نام کالا</label>
+                <input type="text" id="search-input" oninput="updateAllPrices()" placeholder="مثلا: انگشتر گره، دستبند..." class="w-full p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs focus:outline-none focus:border-[#b89327]">
+            </div>
+            <div>
+                <label class="block text-[11px] text-stone-500 font-medium mb-1.5">⚖️ فیلتر بر اساس وزن طلا</label>
+                <select id="filter-weight" onchange="updateAllPrices()" class="w-full p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs focus:outline-none focus:border-[#b89327]">
+                    <option value="all">همه وزن‌ها</option>
+                    <option value="light">✨ ظریف و سبک (زیر ۲ گرم)</option>
+                    <option value="medium">💎 متوسط (۲ تا ۵ گرم)</option>
+                    <option value="heavy">👑 لوکس و سنگین (بالای ۵ گرم)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[11px] text-stone-500 font-medium mb-1.5">💰 فیلتر بر اساس حدود قیمت</label>
+                <select id="filter-price" onchange="updateAllPrices()" class="w-full p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs focus:outline-none focus:border-[#b89327]">
+                    <option value="all">همه قیمت‌ها</option>
+                    <option value="low">اقتصادی (زیر ۱۰ میلیون)</option>
+                    <option value="mid">متوسط (۱۰ تا ۳۰ میلیون)</option>
+                    <option value="high">خاص (بالای ۳۰ میلیون تومان)</option>
+                </select>
+            </div>
+            <div class="flex items-center h-full pt-4 sm:pt-0 sm:justify-center">
+                <label class="inline-flex items-center text-xs text-stone-700 cursor-pointer bg-stone-50 px-4 py-3 rounded-xl border border-stone-200 w-full justify-between sm:justify-start">
+                    <span>📦 فقط طلاهای موجود در انبار</span>
+                    <input type="checkbox" id="filter-only-stock" onchange="updateAllPrices()" class="mr-3 accent-[#b89327] w-4 h-4">
+                </label>
+            </div>
+        </div>
 
         <!-- 🛠️ پنل مدیریت جامع با تنظیمات پیشرفته -->
         <div id="admin-panel" class="hidden bg-white border border-[#e5d5c5] rounded-3xl p-6 mb-8 text-right shadow-md space-y-6">
@@ -244,7 +276,6 @@
         const ADMIN_PHONE = "09111543422";
         const ADMIN_PASS = "211820sk";
 
-        // لیست تمام دسته‌بندی‌های رسمی سایت طبق ساختار درخواستی جدید شما
         const ALL_CATEGORIES = ["دستبند", "گوشواره", "انگشتر", "گردنبند", "آویز", "پلاک", "نیم ست"];
 
         let products = JSON.parse(localStorage.getItem('sama_products')) || [
@@ -410,7 +441,6 @@
             updateAllPrices();
         }
 
-        // فرمول استاندارد طلا: قیمت کل = (قیمت خام + اجرت) + سود + مالیات و سپس اعمال کسر تخفیف کالایی
         function calculateGoldPrice(weight, wagePercent, profitPercent, taxPercent, currentRate, isVip, itemDiscountPercent) {
             if (isVip) { profitPercent = Math.max(0, profitPercent - 2); }
             const basePrice = weight * currentRate;
@@ -434,6 +464,7 @@
             updateAllPrices();
         }
 
+        // تابع اصلی آپدیت ویترین به همراه اعمال فیلترهای سرچ مشتری
         function updateAllPrices() {
             const rawRate = document.getElementById('gold-rate-input').value.replace(/[^0-9]/g, '');
             const currentRate = parseFloat(rawRate) || 0;
@@ -445,20 +476,60 @@
             const isAdmin = session && session.role === 'admin';
             const isVip = session && session.isVip === true;
 
-            const globalFilteredProducts = products.filter(p => {
+            // دریافت مقادیر فیلترها از نوار ابزار مشتری
+            const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+            const weightFilter = document.getElementById('filter-weight').value;
+            const priceFilter = document.getElementById('filter-price').value;
+            const onlyStock = document.getElementById('filter-only-stock').checked;
+
+            // فیلتر اولیه بر اساس منوی سه نقطه (تخفیفی‌ها، موجودی‌ها و...)
+            let filteredList = products.filter(p => {
                 if (currentFilter === 'all') return true;
                 if (currentFilter === 'discount') return p.discountPercent > 0;
                 if (currentFilter === 'stock') return p.isStock;
                 return p.category === currentFilter;
             });
 
-            if (globalFilteredProducts.length === 0) {
-                container.innerHTML = `<div class="bg-white border border-[#e5d5c5] rounded-3xl p-12 text-center text-xs text-stone-500">طلا یا دسته‌بندی انتخاب شده در حال حاضر خالی است.</div>`;
+            // اعمال فیلتر سرچ نام کالا
+            if (searchQuery !== "") {
+                filteredList = filteredList.filter(p => p.name.toLowerCase().includes(searchQuery));
+            }
+
+            // اعمال فیلتر وزن
+            if (weightFilter !== "all") {
+                filteredList = filteredList.filter(p => {
+                    if (weightFilter === "light") return p.weight < 2;
+                    if (weightFilter === "medium") return p.weight >= 2 && p.weight <= 5;
+                    if (weightFilter === "heavy") return p.weight > 5;
+                    return true;
+                });
+            }
+
+            // اعمال فیلتر انبار (فقط موجودها)
+            if (onlyStock) {
+                filteredList = filteredList.filter(p => p.isStock);
+            }
+
+            // اعمال فیلتر قیمت (نیاز به محاسبه تک به تک قیمت نهایی کالا دارد)
+            if (priceFilter !== "all") {
+                filteredList = filteredList.filter(p => {
+                    const itemTax = p.taxPercent !== undefined ? p.taxPercent : 9;
+                    const calculatedPrice = calculateGoldPrice(p.weight, p.wagePercent, p.profitPercent, itemTax, currentRate, isVip, p.discountPercent);
+                    
+                    if (priceFilter === "low") return calculatedPrice < 10000000;
+                    if (priceFilter === "mid") return calculatedPrice >= 10000000 && calculatedPrice <= 30000000;
+                    if (priceFilter === "high") return calculatedPrice > 30000000;
+                    return true;
+                });
+            }
+
+            if (filteredList.length === 0) {
+                container.innerHTML = `<div class="bg-white border border-[#e5d5c5] rounded-3xl p-12 text-center text-xs text-stone-500">هیچ طلایی با مشخصات جستجو شده یافت نشد.</div>`;
                 return;
             }
 
             ALL_CATEGORIES.forEach(cat => {
-                const catProducts = globalFilteredProducts.filter(p => p.category === cat);
+                const catProducts = filteredList.filter(p => p.category === cat);
                 
                 if (catProducts.length > 0) {
                     let sliderHtml = `
