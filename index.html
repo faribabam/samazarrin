@@ -2,9 +2,10 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>گالری طلا و جواهر سما زرین | SAMA ZARRIN</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <style>
         .horizontal-slider::-webkit-scrollbar { display: none; }
         .horizontal-slider { -webkit-overflow-scrolling: touch; }
@@ -66,6 +67,10 @@
             </button>
             
             <div id="dropdown-menu" class="hidden absolute left-0 top-12 w-64 bg-white border border-[#e5d5c5] rounded-2xl shadow-xl p-2 text-right z-50 max-h-[85vh] overflow-y-auto">
+                <button onclick="navigateTo('editor')" class="w-full text-right px-4 py-2 text-xs text-purple-700 bg-purple-50 rounded-xl font-bold flex justify-between items-center cursor-pointer">
+                    <span>🎨 استودیو جایگذاری طلا (کپ‌کات)</span>
+                </button>
+                <div class="border-t border-stone-100 my-1.5"></div>
                 <button onclick="navigateTo('cart')" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl font-medium flex justify-between items-center cursor-pointer">
                     <span>🛒 سبد خرید اختصاصی شما</span>
                     <span id="menu-cart-count" class="bg-stone-100 px-2 py-0.5 rounded-md text-stone-600 font-mono text-[10px]">0 کالا</span>
@@ -199,12 +204,17 @@
                     
                     <div>
                         <label class="text-[11px] text-stone-500 block mb-1">تصویر کالا</label>
-                        <div class="relative flex items-center bg-white rounded-xl border border-[#e5d5c5] px-3 py-3 overflow-hidden">
-                            <label for="prod-img-file" class="w-full text-xs text-stone-500 cursor-pointer flex justify-between items-center">
+                        <div class="relative flex flex-col gap-2 bg-white rounded-xl border border-[#e5d5c5] p-2 overflow-hidden">
+                            <label for="prod-img-file" class="w-full text-xs text-stone-500 cursor-pointer flex justify-between items-center py-1 px-1">
                                 <span id="file-label-text">🖼️ انتخاب مستقیم از گالری عکس</span>
                                 <span class="bg-stone-800 text-white text-[10px] px-2 py-1 rounded-md">گالری</span>
                             </label>
                             <input type="file" id="prod-img-file" accept="image/*" required onchange="handleFileSelect(this)" class="hidden">
+                            
+                            <div id="live-image-preview-zone" class="hidden w-full h-24 rounded-lg overflow-hidden border border-stone-100 bg-stone-50 relative">
+                                <img id="live-preview-img" src="" class="w-full h-full object-cover">
+                                <button type="button" onclick="clearSelectedImage(event)" class="absolute top-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded-md hover:bg-black">تغییر عکس</button>
+                            </div>
                         </div>
                     </div>
                     
@@ -242,7 +252,7 @@
                             <input type="text" id="settings-instagram-url" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
                         </div>
                         <div>
-                            <label class="text-[11px] text-stone-500 block mb-1">آیدی نمایشی اینستاگرام (مثال: sama_zarinn@)</label>
+                            <label class="text-[11px] text-stone-500 block mb-1">آیدی نمایشی اینستاگرام</label>
                             <input type="text" id="settings-instagram-handle" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
                         </div>
                         <div>
@@ -264,7 +274,6 @@
                                     <input type="text" id="settings-bg-custom" placeholder="مثال: #faf8f5" class="w-full p-2.5 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
                                 </div>
                             </div>
-                            <p class="text-[10px] text-stone-400">می‌توانید مستقیماً از پالت بالا رنگ را انتخاب کنید یا کد رنگ هگز/آدرس تصویر SVG مورد نظرتان را به صورت دستی بنویسید.</p>
                         </div>
                         
                         <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
@@ -273,7 +282,6 @@
                                 <input type="text" id="new-category-name" placeholder="مثلا: پابند" class="flex-1 p-2.5 rounded-xl bg-white border border-[#e5d5c5] text-xs focus:outline-none">
                                 <button onclick="addNewCategory()" type="button" class="bg-stone-900 text-white text-xs px-4 py-2.5 rounded-xl hover:bg-black cursor-pointer">افزودن دسته</button>
                             </div>
-                            <div class="text-[11px] text-stone-500">دسته‌بندی‌های فعلی (جهت حذف روی نام آن کلیک کنید):</div>
                             <div id="admin-categories-list" class="flex flex-wrap gap-1.5 pt-1"></div>
                         </div>
                     </div>
@@ -281,6 +289,27 @@
                 <div class="pt-4 border-t border-stone-100 flex justify-end">
                     <button onclick="saveGlobalSettings()" class="bg-[#b89327] text-white text-xs font-bold px-8 py-3 rounded-xl hover:bg-[#a68015] shadow-md cursor-pointer">💾 ذخیره و اعمال نهایی تنظیمات سایت</button>
                 </div>
+            </div>
+        </div>
+
+        <div id="page-editor" class="page-section hidden space-y-6 text-right">
+            <div class="flex justify-between items-center border-b border-stone-200 pb-3">
+                <h2 class="text-xl font-medium text-[#a68015] flex items-center gap-2">🎨 استودیو جایگذاری و چیدمان لوکس جواهرات</h2>
+                <button onclick="navigateTo('showcase')" class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 px-4 py-2 rounded-xl transition-all cursor-pointer">← بازگشت به ویترین</button>
+            </div>
+
+            <div class="flex justify-center items-center bg-stone-900 p-4 rounded-3xl min-h-[380px] relative overflow-hidden shadow-inner">
+                <canvas id="editor-canvas" class="border border-dashed border-stone-700 bg-stone-950 rounded-2xl shadow-2xl"></canvas>
+            </div>
+
+            <div class="bg-white border border-[#e5d5c5] p-4 rounded-2xl flex flex-wrap justify-center gap-4 items-center shadow-sm">
+                <label for="editor-file-input" class="bg-[#b89327] text-white text-xs font-bold px-5 py-3 rounded-xl hover:bg-[#a68015] transition-all cursor-pointer shadow-md">
+                    ➕ افزودن طلا از گالری
+                </label>
+                <input type="file" id="editor-file-input" accept="image/*" class="hidden" onchange="handleEditorFileSelect(this)">
+
+                <button onclick="deleteSelectedEditorObject()" class="bg-rose-50 text-rose-600 text-xs font-bold px-5 py-3 rounded-xl hover:bg-rose-100 transition-all cursor-pointer">🗑️ حذف آیتم انتخابی</button>
+                <button onclick="exportEditorDesign()" class="bg-stone-900 text-white text-xs font-medium px-5 py-3 rounded-xl hover:bg-black transition-all cursor-pointer">💾 خروجی عکس نهایی</button>
             </div>
         </div>
 
@@ -294,7 +323,7 @@
                     <table class="w-full text-right table-fixed border-collapse">
                         <thead>
                             <tr class="bg-stone-50 text-[#a68015] border-b border-stone-200">
-                                <th class="p-4 font-bold text-right text-xs w-1/2 border-l border-stone-200">ویژگی‌ها و خدمات</th>
+                                <th class="p-4 font-bold text-right text-xs w-1/2 border-l border-stone-200">ویژگی‌ها</th>
                                 <th class="p-4 text-center font-bold text-xs w-1/4 border-l border-stone-200">عادی</th>
                                 <th class="p-4 text-center font-bold text-xs w-1/4 text-amber-700">👑 VIP</th>
                             </tr>
@@ -309,16 +338,6 @@
                                 <td class="p-4 text-right text-xs font-medium border-l border-stone-200">ضمانت اصالت و سلامت کالا</td>
                                 <td class="p-4 text-center text-xs text-rose-600 font-medium border-l border-stone-200">❌ معمولی</td>
                                 <td class="p-4 text-center text-xs text-emerald-700 font-bold">✅ طلایی</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4 text-right text-xs font-medium border-l border-stone-200">پشتیبانی اختصاصی ۲۴ ساعته</td>
-                                <td class="p-4 text-center text-xs text-rose-600 font-medium border-l border-stone-200">❌ ندارد</td>
-                                <td class="p-4 text-center text-xs text-emerald-700 font-bold">✅ فعال</td>
-                            </tr>
-                            <tr>
-                                <td class="p-4 text-right text-xs font-medium border-l border-stone-200">بسته‌بندی مخصوص اشتراک ویژه</td>
-                                <td class="p-4 text-center text-xs text-rose-600 font-medium border-l border-stone-200">❌ ندارد</td>
-                                <td class="p-4 text-center text-xs text-emerald-700 font-bold">✅ لوکس VIP</td>
                             </tr>
                         </tbody>
                     </table>
@@ -340,7 +359,7 @@
                 <form onsubmit="submitFinalPurchaseOrder(event)" class="space-y-4 text-right">
                     <div>
                         <label class="text-xs text-[#a68015] mr-1">نام و نام‌خانوادگی خریدار</label>
-                        <input type="text" id="order-user-name" required class="w-full p-3 mt-1 rounded-xl bg-white border border-[#e5d5c5] text-stone-800 text-xs focus:outline-none focus:border-[#b89327]">
+                        <input type="text" id="order-user-name" required class="w-full p-3 mt-1 rounded-xl bg-white border border-[#e5d5c5] text-stone-800 text-xs focus:outline-none">
                     </div>
                     <div>
                         <label class="text-xs text-[#a68015] mr-1">شماره تماس</label>
@@ -374,7 +393,7 @@
         </div>
     </div>
 
-    <script src="https://api.tgju.org/v1/widget/v2" defer></script>
+    <script src="https://v1.tgju.org/widget/v2" defer></script>
 
     <script>
         const BOT_TOKEN = "8940936882:AAG2OeXFfOsOwMPEuwhRHxfef9iBK68q3IU";
@@ -383,7 +402,6 @@
         const ADMIN_PHONE = "09111543422";
         const ADMIN_PASS = "211820sk";
 
-        // بارگذاری تنظیمات داینامیک سایت از LocalStorage یا مقادیر پیش‌فرض
         let siteSettings = JSON.parse(localStorage.getItem('sama_site_settings')) || {
             aboutText: "گالری سما زرین ارائه‌دهنده لوکس‌ترین و ظریف‌ترین طلاهای مینیمال ۱۸ عیار است.",
             instagramUrl: "https://www.instagram.com/sama_zarinn?igsh=MTB4ZW1iY2VzZ255aA==",
@@ -404,6 +422,9 @@
         let cart = JSON.parse(localStorage.getItem('sama_cart')) || [];
         let currentFilter = 'all';
         let selectedImageBase64 = ""; 
+        
+        let fabricCanvasInitialized = false;
+        let canvas;
 
         window.addEventListener('click', function() {
             document.getElementById('dropdown-menu').classList.add('hidden');
@@ -430,9 +451,84 @@
             if(pageId === 'showcase') updateAllPrices();
             if(pageId === 'cart') renderCartPage();
             if(pageId === 'admin') loadAdminSettingsPanel();
+            if(pageId === 'editor') initFabricCanvas();
         }
 
-        // رندر کردن تنظیمات در پنل مدیریت ادمین
+        // مقداردهی بوم متناسب با محیط لمسی گوشی
+        function initFabricCanvas() {
+            if (fabricCanvasInitialized) return;
+            
+            const canvasElement = document.getElementById('editor-canvas');
+            const containerWidth = canvasElement.parentElement.clientWidth;
+            const canvasSize = Math.min(containerWidth - 32, 450);
+            
+            canvasElement.width = canvasSize;
+            canvasElement.height = canvasSize;
+
+            canvas = new fabric.Canvas('editor-canvas', {
+                width: canvasSize,
+                height: canvasSize,
+                backgroundColor: '#141414'
+            });
+
+            // جلوگیری از اسکرول خوردن صفحه آیفون موقع جابجایی طلا روی صفحه
+            canvas.on('mouse:down', () => document.body.style.overflow = 'hidden');
+            canvas.on('mouse:up', () => document.body.style.overflow = 'auto');
+            
+            fabricCanvasInitialized = true;
+        }
+
+        function handleEditorFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(f) {
+                fabric.Image.fromURL(f.target.result, function(img) {
+                    img.scaleToWidth(canvas.width * 0.5);
+                    img.set({
+                        left: canvas.width / 2,
+                        top: canvas.height / 2,
+                        originX: 'center',
+                        originY: 'center',
+                        cornerColor: '#b89327',
+                        cornerStrokeColor: '#ffffff',
+                        borderColor: '#b89327',
+                        cornerSize: 24, // اندازه بزرگ دستگیره‌ها جهت ویرایش آسان با تاچ انگشت
+                        transparentCorners: false
+                    });
+                    canvas.add(img);
+                    canvas.setActiveObject(img);
+                    canvas.renderAll();
+                });
+            };
+            reader.readAsDataURL(file);
+            input.value = ''; 
+        }
+
+        function deleteSelectedEditorObject() {
+            const activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                canvas.remove(activeObject);
+                canvas.discardActiveObject();
+                canvas.renderAll();
+            } else {
+                alert('لطفاً ابتدا روی طلا یا جواهر مورد نظر ضربه بزنید.');
+            }
+        }
+
+        function exportEditorDesign() {
+            if(!canvas) return;
+            canvas.discardActiveObject();
+            canvas.renderAll();
+
+            const dataURL = canvas.toDataURL({ format: 'png', quality: 1.0 });
+            const link = document.createElement('a');
+            link.download = 'sama-zarrin-design.png';
+            link.href = dataURL;
+            link.click();
+        }
+
         function loadAdminSettingsPanel() {
             document.getElementById('settings-about-text').value = siteSettings.aboutText;
             document.getElementById('settings-instagram-url').value = siteSettings.instagramUrl;
@@ -443,14 +539,12 @@
             const bgVal = siteSettings.backgroundStyle || "#faf8f5";
             document.getElementById('settings-bg-custom').value = bgVal;
             
-            // اگر مقدار ذخیره شده یک کد رنگ هگز معتبر است، پالت رنگی را همگام کن
             if(/^#[0-9A-F]{6}$/i.test(bgVal)) {
                 document.getElementById('settings-bg-picker').value = bgVal;
             }
             renderAdminCategoriesList();
         }
 
-        // تغییر فیلد متنی در صورت استفاده از پالت رنگی
         function handleColorPickerChange(picker) {
             document.getElementById('settings-bg-custom').value = picker.value;
         }
@@ -494,12 +588,10 @@
 
             localStorage.setItem('sama_site_settings', JSON.stringify(siteSettings));
             applyLiveSiteSettings();
-            alert("⚙️ تنظیمات عمومی و ساختاری کل سایت با موفقیت بروزرسانی و ذخیره شد.");
+            alert("⚙️ تنظیمات عمومی کل سایت با موفقیت ذخیره شد.");
         }
 
-        // اعمال پویای تنظیمات روی ساختار فرانت‌اند سایت
         function applyLiveSiteSettings() {
-            // اعمال استایل بک‌گراند شخصی سازی شده
             const bodyEl = document.getElementById('main-body');
             const bgStyle = siteSettings.backgroundStyle || "#faf8f5";
             if (bgStyle.includes('url') || bgStyle.includes('linear-gradient')) {
@@ -510,10 +602,8 @@
                 bodyEl.style.backgroundImage = "none";
             }
 
-            // پر کردن متون مودال‌ها
             document.getElementById('about-modal-text-content').innerText = siteSettings.aboutText;
             
-            // پر کردن بخش پشتیبانی و شبکه‌های اجتماعی
             document.getElementById('support-links-container').innerHTML = `
                 <a href="${siteSettings.instagramUrl}" target="_blank" class="flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 border border-pink-200 text-pink-700 text-xs font-bold transition-all hover:scale-[1.02]">
                     <span>📱 پشتیبانی اینستاگرام</span>
@@ -523,13 +613,8 @@
                     <span>✈️ پشتیبانی تلگرام</span>
                     <span dir="ltr" class="text-[10px]">${siteSettings.telegramHandle}</span>
                 </a>
-                <button class="flex items-center justify-between p-3.5 rounded-xl bg-stone-100 border border-stone-200 text-stone-400 text-xs font-bold cursor-not-allowed opacity-60">
-                    <span>💬 پشتیبانی بله</span>
-                    <span class="text-[9px] bg-stone-200 text-stone-600 px-1.5 py-0.5 rounded">به زودی</span>
-                </button>
             `;
 
-            // ساخت داینامیک آیتم‌های دسته‌بندی در منوی سه نقطه مشتری
             const menuCatContainer = document.getElementById('dynamic-menu-categories');
             menuCatContainer.innerHTML = "";
             siteSettings.categories.forEach(cat => {
@@ -540,7 +625,6 @@
                 `;
             });
 
-            // ساخت گزینه‌های بخش سلکت فرم افزودن محصول
             const selectCategoryEl = document.getElementById('prod-category');
             if(selectCategoryEl) {
                 selectCategoryEl.innerHTML = "";
@@ -562,7 +646,7 @@
             if(user) {
                 if(user.purchases >= 2) {
                     msgEl.className = "text-[11px] text-center text-emerald-600 font-bold";
-                    msgEl.innerText = `✅ شما ${user.purchases} دور خرید موفق داشته‌اید. شرایط VIP برای شما مهیا است!`;
+                    msgEl.innerText = `✅ شما ${user.purchases} دور خرید موفق داشته‌اید. شرایط VIP مهیا است!`;
                     btnEl.disabled = false;
                 } else {
                     msgEl.className = "text-[11px] text-center text-rose-600 font-medium";
@@ -608,7 +692,7 @@
             container.innerHTML = "";
 
             if(cart.length === 0) {
-                container.innerHTML = `<div class="bg-white border border-[#e5d5c5] rounded-3xl p-12 text-center text-xs text-stone-500">سبد خرید اختصاصی شما در حال حاضر خالی است. ✨</div>`;
+                container.innerHTML = `<div class="bg-white border border-[#e5d5c5] rounded-3xl p-12 text-center text-xs text-stone-500">سبد خرید اختصاصی شما خالی است.</div>`;
                 document.getElementById('checkout-btn').disabled = true;
                 document.getElementById('checkout-btn').classList.add('opacity-50', 'cursor-not-allowed');
                 resetSummary();
@@ -683,10 +767,10 @@
             const currentGoldRate = document.getElementById('gold-rate-input').value.replace(/[^0-9]/g, '');
             
             const cartReviewUrl = `${window.location.origin}${window.location.pathname}?reviewCart=${encodedCartIds}&rate=${currentGoldRate}`;
-            const telegramMsg = `🛒 سبد خرید اختصاصی جدید!\n\n👤 خریدار: ${uName}\n📱 همراه: ${uPhone}\n📍 آدرس ارسال: ${uAddress}\n\n🔗 لینک سبد خرید:\n${cartReviewUrl}`;
+            const telegramMsg = `🛒 سبد خرید جدید سما زرین\n\n👤 خریدار: ${uName}\n📱 همراه: ${uPhone}\n📍 آدرس: ${uAddress}\n\n🔗 لینک سبد خرید:\n${cartReviewUrl}`;
             
             new Image().src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_CHAT_ID}&text=${encodeURIComponent(telegramMsg)}`;
-            alert("✨ سفارش شما با موفقیت ارسال شد.");
+            alert("✨ سفارش شما ثبت شد.");
             cart = []; saveCart(); closeOrderModal(); navigateTo('showcase');
         }
 
@@ -701,14 +785,30 @@
 
         function handleFileSelect(input) {
             const file = input.files[0];
-            if (file && file.size <= 4 * 1024 * 1024) {
+            if (file) {
+                if (file.size > 4 * 1024 * 1024) { 
+                    alert("❌ حجم تصویر بیش از حد مجاز است."); 
+                    clearSelectedImage();
+                    return; 
+                }
                 const reader = new FileReader();
                 reader.onload = e => {
                     selectedImageBase64 = e.target.result;
-                    document.getElementById('file-label-text').innerText = "✅ عکس مستقیم انتخاب شد";
+                    document.getElementById('file-label-text').innerText = "✅ عکس گالری با موفقیت بارگذاری شد";
+                    document.getElementById('live-preview-img').src = selectedImageBase64;
+                    document.getElementById('live-image-preview-zone').classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
-            } else { alert("❌ حجم تصویر بالا است."); }
+            }
+        }
+
+        function clearSelectedImage(e) {
+            if(e) e.preventDefault();
+            selectedImageBase64 = "";
+            document.getElementById('prod-img-file').value = "";
+            document.getElementById('file-label-text').innerText = "🖼️ انتخاب مستقیم از گالری عکس";
+            document.getElementById('live-image-preview-zone').classList.add('hidden');
+            document.getElementById('live-preview-img').src = "";
         }
 
         async function handleAuth(e) {
@@ -742,7 +842,7 @@
             if(user && user.purchases >= 2) {
                 user.isVip = true;
                 localStorage.setItem('sama_user', JSON.stringify(user));
-                alert("👑 تبریک! حساب شما به سطح VIP ارتقا یافت و ۲٪ تخفیف سود فعال شد.");
+                alert("👑 حساب شما به سطح VIP ارتقا یافت.");
                 location.reload();
             }
         }
@@ -766,17 +866,10 @@
 
                     if (goldPriceMatch) {
                         let newRate = parseInt(goldPriceMatch);
-
                         if (newRate !== lastGoldPrice) {
-                            if (newRate > 25000000) { 
-                                newRate = Math.round(newRate / 10); 
-                            }
-
-                            if (lastGoldPrice && newRate > lastGoldPrice) { 
-                                indicator.innerText = "📈"; 
-                            } else if (lastGoldPrice && newRate < lastGoldPrice) { 
-                                indicator.innerText = "📉"; 
-                            }
+                            if (newRate > 25000000) { newRate = Math.round(newRate / 10); }
+                            if (lastGoldPrice && newRate > lastGoldPrice) { indicator.innerText = "📈"; } 
+                            else if (lastGoldPrice && newRate < lastGoldPrice) { indicator.innerText = "📉"; }
 
                             lastGoldPrice = newRate;
                             inputElement.value = newRate.toLocaleString('en-US');
@@ -808,9 +901,8 @@
             localStorage.setItem('sama_products', JSON.stringify(products));
             updateAllPrices();
             e.target.reset();
-            document.getElementById('file-label-text').innerText = "🖼️ انتخاب مستقیم از گالری عکس";
-            selectedImageBase64 = "";
-            alert("✨ کالا با موفقیت به پایگاه داده و ویترین افزوده شد.");
+            clearSelectedImage();
+            alert("✨ کالا با موفقیت به ویترین افزوده شد.");
         }
 
         function deleteProduct(id) {
@@ -871,7 +963,6 @@
             filteredList = filteredList.filter(p => p.weight >= weightMin && p.weight <= weightMax);
             if(onlyStock) filteredList = filteredList.filter(p => p.isStock);
 
-            // ایجاد اسلایدرها به صورت کاملاً داینامیک بر اساس لیست دسته‌بندی فعلی ادمین
             siteSettings.categories.forEach(cat => {
                 const catProducts = filteredList.filter(p => p.category === cat);
                 if (catProducts.length > 0) {
@@ -886,7 +977,6 @@
                                     <img src="${p.img}" class="w-full h-full object-cover">
                                     <div class="absolute top-3 right-3 flex flex-col gap-1">
                                         <span class="bg-white/90 px-2.5 py-0.5 rounded-full text-[10px] text-[#a68015] font-bold">${p.weight.toFixed(2)} گرم</span>
-                                        ${p.discountPercent > 0 ? `<span class="bg-rose-600 text-white px-2 py-0.5 rounded-full text-[9px] font-bold font-mono text-center">%${p.discountPercent} تخفیف</span>` : ''}
                                     </div>
                                 </div>
                                 <div class="p-4 text-right space-y-3">
@@ -909,7 +999,7 @@
 
         function checkLoginState() {
             const session = localStorage.getItem('sama_user');
-            applyLiveSiteSettings(); // اعمال پویای ویژگی‌های ظاهری در ابتدای لود
+            applyLiveSiteSettings();
             
             if (session) {
                 const user = JSON.parse(session);
