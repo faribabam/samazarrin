@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="hidden" id="tgju-hidden-bridge">
+            <div class="opacity-0 absolute -z-50 pointer-events-none" id="tgju-hidden-bridge">
                 <tgju type="market-data" items="137121" columns="dot" token="webservice"></tgju>
             </div>
         </header>
@@ -589,7 +589,7 @@
             }
         }
 
-        // ⚡ پل هوشمند جاوااسکریپت برای قاپیدن دیتای عددی از ابزارک رسمی TGJU
+        // ⚡ پل هوشمند برای خواندن دیتای زنده از ابزارک بارگذاری‌شده‌ی TGJU
         function startLiveGoldRate() {
             const bridgeContainer = document.getElementById('tgju-hidden-bridge');
             const inputElement = document.getElementById('gold-rate-input');
@@ -597,37 +597,48 @@
 
             if (!bridgeContainer) return;
 
-            // تعریف یک ناظر ساختاری برای مانیتور کردن رندر شدن کدهای ویجت TGJU
             const observer = new MutationObserver((mutations) => {
-                const priceElement = bridgeContainer.querySelector('.tgju-data-value, [data-tgju-item="137121"] .tgju-data-value, span');
+                // استخراج تمام محتوای متنی داخل ویجت رندر شده
+                const fullText = bridgeContainer.innerText || bridgeContainer.textContent || "";
                 
-                if (priceElement && priceElement.innerText.trim() !== "") {
-                    let rawPriceText = priceElement.innerText.replace(/[^0-9]/g, '');
-                    let newRate = parseInt(rawPriceText);
+                // جدا کردن تمام زنجیره‌های عددی موجود
+                const matches = fullText.match(/\d+/g);
+                
+                if (matches && matches.length > 0) {
+                    // فیلتر کردن و پیدا کردن عدد اصلی قیمت طلا (عددی که فراتر از ۱ میلیون تومان یا ریال است)
+                    const goldPriceMatch = matches.find(numStr => {
+                        const val = parseInt(numStr);
+                        return val > 1000000;
+                    });
 
-                    if (newRate && newRate > 1000000 && newRate !== lastGoldPrice) {
-                        // در صورتی که دیتای دریافتی به ریال باشد، آن را تبدیل به تومان می‌کند
-                        if (newRate > 20000000) { 
-                            newRate = Math.round(newRate / 10); 
+                    if (goldPriceMatch) {
+                        let newRate = parseInt(goldPriceMatch);
+
+                        if (newRate !== lastGoldPrice) {
+                            // تبدیل ریال به تومان در صورت دریافت نرخ ده رقمی بازار تهران
+                            if (newRate > 25000000) { 
+                                newRate = Math.round(newRate / 10); 
+                            }
+
+                            // اعمال اموجی‌های تغییرات نرخ طلا
+                            if (lastGoldPrice && newRate > lastGoldPrice) { 
+                                indicator.innerText = "📈"; 
+                            } else if (lastGoldPrice && newRate < lastGoldPrice) { 
+                                indicator.innerText = "📉"; 
+                            }
+
+                            lastGoldPrice = newRate;
+                            inputElement.value = newRate.toLocaleString('en-US');
+                            
+                            // بازنشانی و محاسبه‌ی سراسری اتوماتیک مبالغ ویترین
+                            updateAllPrices();
                         }
-
-                        // ست کردن اموجی‌های روند بر اساس مقایسه با نرخ قبلی
-                        if (newRate > lastGoldPrice) { 
-                            indicator.innerText = "📈"; 
-                        } else if (newRate < lastGoldPrice) { 
-                            indicator.innerText = "📉"; 
-                        }
-
-                        lastGoldPrice = newRate;
-                        inputElement.value = newRate.toLocaleString('en-US');
-                        
-                        // رندر مجدد اتوماتیک قیمت کل ویترین طلا فروشی
-                        updateAllPrices();
                     }
                 }
             });
 
-            observer.observe(bridgeContainer, { childList: true, subtree: true });
+            // نظارت دقیق بر روی کوچک‌ترین تغییر متنی یا ساختاری درون باکس ویجت فعال
+            observer.observe(bridgeContainer, { childList: true, subtree: true, characterData: true });
         }
 
         function addNewProduct(e) {
