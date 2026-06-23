@@ -9,11 +9,25 @@
     <style>
         .horizontal-slider::-webkit-scrollbar { display: none; }
         .horizontal-slider { -webkit-overflow-scrolling: touch; }
+        
+        /* افکت لایه تاریک‌کننده روی پس‌زمینه سایت برای خوانایی متن‌ها */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.15); /* تاری و تاریکی ملایم */
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body id="main-body" class="p-4 md:p-8 flex items-center justify-center min-h-screen bg-[#faf8f5]">
+<body id="main-body" class="p-4 md:p-8 flex items-center justify-center min-h-screen bg-[#faf8f5] bg-cover bg-center bg-no-repeat bg-fixed transition-all duration-500">
 
-    <div id="auth-box" class="w-full max-w-sm bg-white p-8 rounded-3xl shadow-xl border border-[#e5d5c5]">
+    <div class="bg-overlay"></div>
+
+    <div id="auth-box" class="w-full max-w-sm bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-[#e5d5c5] z-10">
         <h1 class="text-center text-2xl font-light tracking-widest text-[#a68015] mb-2 uppercase">SAMA ZARRIN</h1>
         <p class="text-center text-xs text-stone-500 mb-6">ورود / ثبت‌نام در گالری سما زرین</p>
         
@@ -34,7 +48,7 @@
         </form>
     </div>
 
-    <div id="main-panel" class="w-full max-w-5xl mx-auto hidden relative">
+    <div id="main-panel" class="w-full max-w-5xl mx-auto hidden relative z-10">
         
         <div id="admin-hamburger-zone" class="absolute top-4 right-4 z-50 hidden">
             <button onclick="toggleAdminMenu(event)" class="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white hover:bg-black transition-colors cursor-pointer shadow-md">
@@ -95,7 +109,7 @@
             </div>
         </div>
 
-        <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-stone-200 mb-6 gap-4 pl-28 pr-14">
+        <header class="bg-white/80 backdrop-blur-md rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center pb-6 border border-stone-200 mb-6 gap-4 pl-28 pr-14 shadow-sm">
             <div class="text-right">
                 <h1 onclick="navigateTo('showcase')" class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-sm cursor-pointer">SAMA ZARRIN</h1>
                 <div class="flex items-center gap-2 mt-1">
@@ -120,7 +134,7 @@
         </header>
 
         <div id="page-showcase" class="page-section space-y-6">
-            <div id="customer-filter-area" class="bg-white border border-[#e5d5c5] rounded-2xl p-5 shadow-sm text-right grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
+            <div id="customer-filter-area" class="bg-white/90 backdrop-blur-md border border-[#e5d5c5] rounded-2xl p-5 shadow-sm text-right grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-[11px] text-stone-500 font-medium mb-1.5">🔍 جستجوی نام کالا</label>
                     <input type="text" id="search-input" oninput="updateAllPrices()" placeholder="مثلا: انگشتر گره..." class="w-full p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs focus:outline-none focus:border-[#b89327]">
@@ -150,7 +164,7 @@
         </div>
 
         <div id="page-cart" class="page-section hidden space-y-6 text-right">
-            <div class="flex justify-between items-center border-b border-stone-200 pb-3">
+            <div class="flex justify-between items-center bg-white/90 p-4 rounded-2xl border border-stone-200 pb-3">
                 <h2 class="text-xl font-medium text-[#a68015] flex items-center gap-2">🛒 سبد خرید اختصاصی شما</h2>
                 <button onclick="navigateTo('showcase')" class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 px-4 py-2 rounded-xl transition-all cursor-pointer">← بازگشت به ویترین</button>
             </div>
@@ -240,9 +254,25 @@
             </div>
 
             <div class="bg-white border border-[#e5d5c5] rounded-3xl p-6 shadow-md space-y-6">
-                <h3 class="text-md font-medium text-[#a68015] flex items-center gap-1">⚙️ تنظیمات عمومی و ظاهری سایت (شخصی‌سازی)</h3>
+                <h3 class="text-md font-medium text-[#a68015] flex items-center gap-1">⚙️ تنظیمات عمومی و شخصی‌سازی کل سایت</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-stone-900 to-stone-950 p-5 rounded-2xl border border-stone-800 text-right space-y-3 shadow-lg">
+                            <label class="text-xs font-bold text-amber-400 block flex items-center gap-1">🎬 استودیو پس‌زمینه سایت (مخصوص شما)</label>
+                            <p class="text-[10px] text-stone-400">عکس دلخواهت رو آپلود کن تا پس‌زمینه کل سایت تغییر کنه.</p>
+                            
+                            <div class="flex gap-2 items-center">
+                                <label for="admin-bg-file" class="bg-[#b89327] hover:bg-[#a68015] text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all text-center flex-1">
+                                    ＋ انتخاب عکس پس‌زمینه از گالری
+                                </label>
+                                <input type="file" id="admin-bg-file" accept="image/*" onchange="handleAdminBackgroundUpload(this)" class="hidden">
+                                
+                                <button type="button" onclick="resetToDefaultBackground()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[11px] px-4 py-2.5 rounded-xl transition-all">
+                                    ریست پس‌زمینه
+                                </button>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="text-[11px] text-stone-500 block mb-1">متن صفحه «درباره‌ی ما»</label>
                             <textarea id="settings-about-text" rows="3" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] focus:outline-none focus:border-[#b89327]"></textarea>
@@ -251,6 +281,9 @@
                             <label class="text-[11px] text-stone-500 block mb-1">لینک مستقیم اینستاگرام پشتیبانی</label>
                             <input type="text" id="settings-instagram-url" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
                         </div>
+                    </div>
+
+                    <div class="space-y-4 flex flex-col justify-between">
                         <div>
                             <label class="text-[11px] text-stone-500 block mb-1">آیدی نمایشی اینستاگرام</label>
                             <input type="text" id="settings-instagram-handle" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
@@ -262,18 +295,6 @@
                         <div>
                             <label class="text-[11px] text-stone-500 block mb-1">آیدی نمایشی تلگرام</label>
                             <input type="text" id="settings-telegram-handle" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
-                        </div>
-                    </div>
-
-                    <div class="space-y-4 flex flex-col justify-between">
-                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
-                            <label class="text-xs font-bold text-stone-700 block">🎨 انتخاب رنگ پس‌زمینه سایت:</label>
-                            <div class="flex items-center gap-3">
-                                <input type="color" id="settings-bg-picker" oninput="handleColorPickerChange(this)" class="w-12 h-12 rounded-xl cursor-pointer border border-stone-300 overflow-hidden">
-                                <div class="flex-1">
-                                    <input type="text" id="settings-bg-custom" placeholder="مثال: #faf8f5" class="w-full p-2.5 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
-                                </div>
-                            </div>
                         </div>
                         
                         <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
@@ -293,7 +314,7 @@
         </div>
 
         <div id="page-editor" class="page-section hidden space-y-6 text-right">
-            <div class="flex justify-between items-center border-b border-stone-200 pb-3">
+            <div class="flex justify-between items-center bg-white/90 p-4 rounded-2xl border border-stone-200 pb-3">
                 <h2 class="text-xl font-medium text-[#a68015] flex items-center gap-2">🎨 استودیو جایگذاری و چیدمان لوکس جواهرات</h2>
                 <button onclick="navigateTo('showcase')" class="text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 px-4 py-2 rounded-xl transition-all cursor-pointer">← بازگشت به ویترین</button>
             </div>
@@ -409,6 +430,7 @@
             telegramUrl: "https://t.me/sama_zarinn",
             telegramHandle: "sama_zarinn",
             backgroundStyle: "#faf8f5",
+            customBackgroundImage: "", // نگهداری عکس پس‌زمینه کاستوم ادمین
             categories: ["دستبند", "گوشواره", "انگشتر", "گردنبند", "آویز", "پلاک", "نیم ست"]
         };
 
@@ -454,7 +476,6 @@
             if(pageId === 'editor') initFabricCanvas();
         }
 
-        // مقداردهی بوم متناسب با محیط لمسی گوشی
         function initFabricCanvas() {
             if (fabricCanvasInitialized) return;
             
@@ -471,7 +492,6 @@
                 backgroundColor: '#141414'
             });
 
-            // جلوگیری از اسکرول خوردن صفحه آیفون موقع جابجایی طلا روی صفحه
             canvas.on('mouse:down', () => document.body.style.overflow = 'hidden');
             canvas.on('mouse:up', () => document.body.style.overflow = 'auto');
             
@@ -494,7 +514,7 @@
                         cornerColor: '#b89327',
                         cornerStrokeColor: '#ffffff',
                         borderColor: '#b89327',
-                        cornerSize: 24, // اندازه بزرگ دستگیره‌ها جهت ویرایش آسان با تاچ انگشت
+                        cornerSize: 24,
                         transparentCorners: false
                     });
                     canvas.add(img);
@@ -529,24 +549,41 @@
             link.click();
         }
 
+        /* 🎬 تابع اختصاصی ادمین برای آپلود و تبدیل عکس گالری آیفون به بکگراند کل سایت */
+        function handleAdminBackgroundUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) { 
+                alert("❌ حجم تصویر پس‌زمینه پیشنهادی شما بالاست (حداکثر ۵ مگابایت)"); 
+                return; 
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                siteSettings.customBackgroundImage = e.target.result;
+                localStorage.setItem('sama_site_settings', JSON.stringify(siteSettings));
+                applyLiveSiteSettings();
+                alert("🎬 پس‌زمینه اختصاصی شما با موفقیت برای کل سایت روی هوا اعمال شد!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* ریست کردن بکگراند به حالت رنگ طلایی/کرم اولیه */
+        function resetToDefaultBackground() {
+            siteSettings.customBackgroundImage = "";
+            localStorage.setItem('sama_site_settings', JSON.stringify(siteSettings));
+            applyLiveSiteSettings();
+            alert("پس‌زمینه سایت به حالت پیش‌فرض گالری بازگشت.");
+        }
+
         function loadAdminSettingsPanel() {
             document.getElementById('settings-about-text').value = siteSettings.aboutText;
             document.getElementById('settings-instagram-url').value = siteSettings.instagramUrl;
             document.getElementById('settings-instagram-handle').value = siteSettings.instagramHandle;
             document.getElementById('settings-telegram-url').value = siteSettings.telegramUrl;
             document.getElementById('settings-telegram-handle').value = siteSettings.telegramHandle;
-            
-            const bgVal = siteSettings.backgroundStyle || "#faf8f5";
-            document.getElementById('settings-bg-custom').value = bgVal;
-            
-            if(/^#[0-9A-F]{6}$/i.test(bgVal)) {
-                document.getElementById('settings-bg-picker').value = bgVal;
-            }
             renderAdminCategoriesList();
-        }
-
-        function handleColorPickerChange(picker) {
-            document.getElementById('settings-bg-custom').value = picker.value;
         }
 
         function renderAdminCategoriesList() {
@@ -584,7 +621,6 @@
             siteSettings.instagramHandle = document.getElementById('settings-instagram-handle').value.trim();
             siteSettings.telegramUrl = document.getElementById('settings-telegram-url').value.trim();
             siteSettings.telegramHandle = document.getElementById('settings-telegram-handle').value.trim();
-            siteSettings.backgroundStyle = document.getElementById('settings-bg-custom').value.trim();
 
             localStorage.setItem('sama_site_settings', JSON.stringify(siteSettings));
             applyLiveSiteSettings();
@@ -593,13 +629,13 @@
 
         function applyLiveSiteSettings() {
             const bodyEl = document.getElementById('main-body');
-            const bgStyle = siteSettings.backgroundStyle || "#faf8f5";
-            if (bgStyle.includes('url') || bgStyle.includes('linear-gradient')) {
-                bodyEl.style.backgroundImage = bgStyle;
-                bodyEl.style.backgroundColor = "";
+            
+            /* چک کردن اینکه آیا ادمین عکس آپلود کرده یا نه */
+            if (siteSettings.customBackgroundImage) {
+                bodyEl.style.backgroundImage = `url('${siteSettings.customBackgroundImage}')`;
             } else {
-                bodyEl.style.backgroundColor = bgStyle;
                 bodyEl.style.backgroundImage = "none";
+                bodyEl.style.backgroundColor = siteSettings.backgroundStyle || "#faf8f5";
             }
 
             document.getElementById('about-modal-text-content').innerText = siteSettings.aboutText;
@@ -966,13 +1002,13 @@
             siteSettings.categories.forEach(cat => {
                 const catProducts = filteredList.filter(p => p.category === cat);
                 if (catProducts.length > 0) {
-                    let sliderHtml = `<div class="space-y-3"><h2 class="text-md font-medium text-[#a68015] px-1">✨ مجموعه ${cat}‌های لوکس</h2><div class="horizontal-slider flex gap-4 overflow-x-auto pb-4 pt-1 px-1">`;
+                    let sliderHtml = `<div class="space-y-3"><h2 class="text-md font-medium text-[#a68015] px-1 bg-white/60 inline-block rounded-lg px-2">✨ مجموعه ${cat}‌های لوکس</h2><div class="horizontal-slider flex gap-4 overflow-x-auto pb-4 pt-1 px-1">`;
                     catProducts.forEach(p => {
                         const itemTax = p.taxPercent !== undefined ? p.taxPercent : 9;
                         const finalPrice = calculateGoldPrice(p.weight, p.wagePercent, p.profitPercent, itemTax, currentRate, isVip, p.discountPercent);
                         
                         sliderHtml += `
-                            <div class="flex-none w-64 bg-white rounded-3xl overflow-hidden shadow-md border border-[#e5d5c5]">
+                            <div class="flex-none w-64 bg-white/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-md border border-[#e5d5c5]">
                                 <div class="h-48 bg-stone-100 relative">
                                     <img src="${p.img}" class="w-full h-full object-cover">
                                     <div class="absolute top-3 right-3 flex flex-col gap-1">
@@ -1003,7 +1039,7 @@
             
             if (session) {
                 const user = JSON.parse(session);
-                document.getElementById('main-body').className = "p-4 md:p-8 block transition-all duration-300";
+                document.getElementById('main-body').className = "p-4 md:p-8 block transition-all duration-500 bg-cover bg-center bg-no-repeat bg-fixed min-h-screen";
                 document.getElementById('auth-box').classList.add('hidden');
                 document.getElementById('main-panel').classList.remove('hidden');
                 document.getElementById('user-welcome').innerText = `✨ ${user.name} خوش آمدید`;
