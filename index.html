@@ -12,7 +12,6 @@
 </head>
 <body id="main-body" class="p-4 md:p-8 flex items-center justify-center min-h-screen bg-[#faf8f5]">
 
-    <!-- 🔐 بخش ورود / ثبت نام -->
     <div id="auth-box" class="w-full max-w-sm bg-white p-8 rounded-3xl shadow-xl border border-[#e5d5c5]">
         <h1 class="text-center text-2xl font-light tracking-widest text-[#a68015] mb-2 uppercase">SAMA ZARRIN</h1>
         <p class="text-center text-xs text-stone-500 mb-6">ورود / ثبت‌نام در گالری سما زرین</p>
@@ -34,10 +33,8 @@
         </form>
     </div>
 
-    <!-- 🛍️ پنل اصلی برنامه چندصفحه‌ای -->
     <div id="main-panel" class="w-full max-w-5xl mx-auto hidden relative">
         
-        <!-- ☰ منوی مدیریت (فقط برای ادمین) -->
         <div id="admin-hamburger-zone" class="absolute top-4 right-4 z-50 hidden">
             <button onclick="toggleAdminMenu(event)" class="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white hover:bg-black transition-colors cursor-pointer shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +51,6 @@
             </div>
         </div>
 
-        <!-- 💬 منوی مشتری و آیکون سبد خرید -->
         <div class="absolute top-4 left-4 z-50 flex items-center gap-2">
             <button onclick="navigateTo('cart')" class="w-10 h-10 rounded-full bg-white border border-[#e5d5c5] flex items-center justify-center text-[#a68015] hover:bg-stone-50 relative cursor-pointer shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +65,6 @@
                 </svg>
             </button>
             
-            <!-- منوی سه نقطه داینامیک -->
             <div id="dropdown-menu" class="hidden absolute left-0 top-12 w-64 bg-white border border-[#e5d5c5] rounded-2xl shadow-xl p-2 text-right z-50 max-h-[85vh] overflow-y-auto">
                 <button onclick="navigateTo('cart')" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl font-medium flex justify-between items-center cursor-pointer">
                     <span>🛒 سبد خرید اختصاصی شما</span>
@@ -86,7 +81,6 @@
                 <div class="border-t border-stone-100 my-1.5"></div>
                 <div class="px-4 py-1.5 text-xs text-[#a68015] font-bold">دسته‌بندی‌های طلا ✨</div>
                 
-                <!-- این بخش به صورت داینامیک بر اساس تنظیمات ادمین پر می‌شود -->
                 <div id="dynamic-menu-categories" class="space-y-0.5"></div>
                 
                 <div class="border-t border-stone-100 my-1.5"></div>
@@ -96,7 +90,6 @@
             </div>
         </div>
 
-        <!-- هدر بالایی ثابت ویترین -->
         <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-stone-200 mb-6 gap-4 pl-28 pr-14">
             <div class="text-right">
                 <h1 onclick="navigateTo('showcase')" class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-sm cursor-pointer">SAMA ZARRIN</h1>
@@ -121,7 +114,6 @@
             </div>
         </header>
 
-        <!-- ================= صفحه ۱: ویترین محصولات ================= -->
         <div id="page-showcase" class="page-section space-y-6">
             <div id="customer-filter-area" class="bg-white border border-[#e5d5c5] rounded-2xl p-5 shadow-sm text-right grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                 <div>
@@ -152,7 +144,6 @@
             <div id="sliders-container" class="space-y-8"></div>
         </div>
 
-        <!-- ================= صفحه ۲: سبد خرید کاربران ================= -->
         <div id="page-cart" class="page-section hidden space-y-6 text-right">
             <div class="flex justify-between items-center border-b border-stone-200 pb-3">
                 <h2 class="text-xl font-medium text-[#a68015] flex items-center gap-2">🛒 سبد خرید اختصاصی شما</h2>
@@ -176,10 +167,8 @@
             </div>
         </div>
 
-        <!-- ================= صفحه ۳: پنل مدیریت کامل کالاها و تنظیمات عمومی کلا سایت ================= -->
         <div id="page-admin" class="page-section hidden space-y-8 text-right">
             
-            <!-- فرم افزودن کالا -->
             <div class="bg-white border border-[#e5d5c5] rounded-3xl p-6 shadow-md space-y-6">
                 <h3 class="text-md font-medium text-[#a68015] flex items-center gap-1">🛠️ مدیریت ویترین و محصولات گالری</h3>
                 <form onsubmit="addNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-b border-stone-100 pb-6">
@@ -240,11 +229,9 @@
                 </div>
             </div>
 
-            <!-- ⚙️ بخش جدید: تنظیمات عمومی و شخصی سازی کل سایت -->
             <div class="bg-white border border-[#e5d5c5] rounded-3xl p-6 shadow-md space-y-6">
                 <h3 class="text-md font-medium text-[#a68015] flex items-center gap-1">⚙️ تنظیمات عمومی و ظاهری سایت (شخصی‌سازی)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- ویرایش شبکه‌های اجتماعی و درباره ما -->
                     <div class="space-y-4">
                         <div>
                             <label class="text-[11px] text-stone-500 block mb-1">متن صفحه «درباره‌ی ما»</label>
@@ -268,12 +255,16 @@
                         </div>
                     </div>
 
-                    <!-- مدیریت پس‌زمینه و دسته‌بندی‌ها -->
                     <div class="space-y-4 flex flex-col justify-between">
-                        <div>
-                            <label class="text-[11px] text-stone-500 block mb-1">تنظیم رنگ یا تصویر پس‌زمینه کل سایت (کد رنگ هگز یا تصویر SVG/آدرس تصویر)</label>
-                            <input type="text" id="settings-bg-custom" placeholder="مثال: #faf8f5" class="w-full p-3 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none focus:border-[#b89327]" dir="ltr">
-                            <p class="text-[10px] text-stone-400 mt-1">می‌توانید کدهای هگز رنگی یا آدرس URL تصویر مورد نظرتان را جهت اعمال روی بک‌گراند وارد کنید.</p>
+                        <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
+                            <label class="text-xs font-bold text-stone-700 block">🎨 انتخاب رنگ پس‌زمینه سایت:</label>
+                            <div class="flex items-center gap-3">
+                                <input type="color" id="settings-bg-picker" oninput="handleColorPickerChange(this)" class="w-12 h-12 rounded-xl cursor-pointer border border-stone-300 overflow-hidden">
+                                <div class="flex-1">
+                                    <input type="text" id="settings-bg-custom" placeholder="مثال: #faf8f5" class="w-full p-2.5 rounded-xl bg-white text-stone-800 text-xs border border-[#e5d5c5] text-left font-mono focus:outline-none" dir="ltr">
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-stone-400">می‌توانید مستقیماً از پالت بالا رنگ را انتخاب کنید یا کد رنگ هگز/آدرس تصویر SVG مورد نظرتان را به صورت دستی بنویسید.</p>
                         </div>
                         
                         <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
@@ -293,7 +284,6 @@
             </div>
         </div>
 
-        <!-- 👑 مودال مقایسه‌ای اشتراک VIP -->
         <div id="vip-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-xl w-full text-right space-y-6 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-stone-100 pb-3">
@@ -341,7 +331,6 @@
             </div>
         </div>
 
-        <!-- 📋 مودال اختصاصی فرم نهایی ثبت مشخصات سفارش -->
         <div id="order-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-md w-full text-right space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-stone-100 pb-2">
@@ -366,7 +355,6 @@
             </div>
         </div>
 
-        <!-- ☎️ مودال صفحه پشتیبانی چندگانه -->
         <div id="support-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-sm w-full text-right space-y-5 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-stone-100 pb-2">
@@ -377,7 +365,6 @@
             </div>
         </div>
 
-        <!-- ℹ️ درباره ما -->
         <div id="about-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-md w-full text-right space-y-5 shadow-2xl">
                 <h3 class="text-lg font-medium text-[#a68015]">درباره گالری سما زرین</h3>
@@ -387,7 +374,6 @@
         </div>
     </div>
 
-    <!-- اسکریپت ابزارک رسمی TGJU -->
     <script src="https://api.tgju.org/v1/widget/v2" defer></script>
 
     <script>
@@ -404,7 +390,7 @@
             instagramHandle: "@sama_zarinn",
             telegramUrl: "https://t.me/sama_zarinn",
             telegramHandle: "sama_zarinn",
-            backgroundStyle: "url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;80&quot; height=&quot;80&quot; viewBox=&quot;0 0 80 80&quot;><path d=&quot;M40 10 C48 25, 60 25, 60 40 C60 55, 48 55, 40 70 C32 55, 20 55, 20 40 C20 25, 32 25, 40 10 Z&quot; fill=&quot;none&quot; stroke=&quot;%23d4af37&quot; stroke-width=&quot;0.6&quot; opacity=&quot;0.12&quot;/></svg>')",
+            backgroundStyle: "#faf8f5",
             categories: ["دستبند", "گوشواره", "انگشتر", "گردنبند", "آویز", "پلاک", "نیم ست"]
         };
 
@@ -453,8 +439,20 @@
             document.getElementById('settings-instagram-handle').value = siteSettings.instagramHandle;
             document.getElementById('settings-telegram-url').value = siteSettings.telegramUrl;
             document.getElementById('settings-telegram-handle').value = siteSettings.telegramHandle;
-            document.getElementById('settings-bg-custom').value = siteSettings.backgroundStyle;
+            
+            const bgVal = siteSettings.backgroundStyle || "#faf8f5";
+            document.getElementById('settings-bg-custom').value = bgVal;
+            
+            // اگر مقدار ذخیره شده یک کد رنگ هگز معتبر است، پالت رنگی را همگام کن
+            if(/^#[0-9A-F]{6}$/i.test(bgVal)) {
+                document.getElementById('settings-bg-picker').value = bgVal;
+            }
             renderAdminCategoriesList();
+        }
+
+        // تغییر فیلد متنی در صورت استفاده از پالت رنگی
+        function handleColorPickerChange(picker) {
+            document.getElementById('settings-bg-custom').value = picker.value;
         }
 
         function renderAdminCategoriesList() {
@@ -503,11 +501,12 @@
         function applyLiveSiteSettings() {
             // اعمال استایل بک‌گراند شخصی سازی شده
             const bodyEl = document.getElementById('main-body');
-            if (siteSettings.backgroundStyle.includes('url') || siteSettings.backgroundStyle.includes('linear-gradient')) {
-                bodyEl.style.backgroundImage = siteSettings.backgroundStyle;
+            const bgStyle = siteSettings.backgroundStyle || "#faf8f5";
+            if (bgStyle.includes('url') || bgStyle.includes('linear-gradient')) {
+                bodyEl.style.backgroundImage = bgStyle;
                 bodyEl.style.backgroundColor = "";
             } else {
-                bodyEl.style.backgroundColor = siteSettings.backgroundStyle;
+                bodyEl.style.backgroundColor = bgStyle;
                 bodyEl.style.backgroundImage = "none";
             }
 
