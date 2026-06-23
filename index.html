@@ -12,6 +12,7 @@
 </head>
 <body id="main-body" class="p-4 md:p-8 flex items-center justify-center min-h-screen bg-[#faf8f5]" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;80&quot; height=&quot;80&quot; viewBox=&quot;0 0 80 80&quot;><path d=&quot;M40 10 C48 25, 60 25, 60 40 C60 55, 48 55, 40 70 C32 55, 20 55, 20 40 C20 25, 32 25, 40 10 Z&quot; fill=&quot;none&quot; stroke=&quot;%23d4af37&quot; stroke-width=&quot;0.6&quot; opacity=&quot;0.12&quot;/></svg>');">
 
+    <!-- 🔐 بخش ورود / ثبت نام -->
     <div id="auth-box" class="w-full max-w-sm bg-white p-8 rounded-3xl shadow-xl border border-[#e5d5c5]">
         <h1 class="text-center text-2xl font-light tracking-widest text-[#a68015] mb-2 uppercase">SAMA ZARRIN</h1>
         <p class="text-center text-xs text-stone-500 mb-6">ورود / ثبت‌نام در گالری سما زرین</p>
@@ -33,8 +34,10 @@
         </form>
     </div>
 
+    <!-- 🛍️ پنل اصلی برنامه چندصفحه‌ای -->
     <div id="main-panel" class="w-full max-w-5xl mx-auto hidden relative">
         
+        <!-- ☰ منوی مدیریت (فقط برای ادمین) -->
         <div id="admin-hamburger-zone" class="absolute top-4 right-4 z-50 hidden">
             <button onclick="toggleAdminMenu(event)" class="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white hover:bg-black transition-colors cursor-pointer shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,21 +56,25 @@
             </div>
         </div>
 
+        <!-- 💬 منوی مشتری و آیکون سبد خرید -->
         <div class="absolute top-4 left-4 z-50 flex items-center gap-2">
-            <button onclick="navigateTo('cart')" class="w-10 h-10 rounded-full bg-white border border-[#e5d5c5] flex items-center justify-center text-[#a68015] hover:bg-stone-50 relative cursor-pointer shadow-sm">
+            <!-- دکمه ناوبری سریع به سبد خرید -->
+            <button onclick="navigateTo('cart')" class="w-10 h-10 rounded-full bg-white border border border-[#e5d5c5] flex items-center justify-center text-[#a68015] hover:bg-stone-50 relative cursor-pointer shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                 <span id="cart-badge-count" class="absolute -top-1 -left-1 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold font-mono">0</span>
             </button>
 
-            <button onclick="toggleMenu(event)" class="w-10 h-10 rounded-full bg-white border border-[#e5d5c5] flex items-center justify-center text-[#a68015] hover:bg-stone-50 transition-colors cursor-pointer shadow-sm">
+            <!-- دکمه سه نقطه مشتری -->
+            <button onclick="toggleMenu(event)" class="w-10 h-10 rounded-full bg-white border border border-[#e5d5c5] flex items-center justify-center text-[#a68015] hover:bg-stone-50 transition-colors cursor-pointer shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 17v.01" />
                 </svg>
             </button>
             
-            <div id="dropdown-menu" class="hidden absolute left-0 mt-12 w-64 bg-white border border-[#e5d5c5] rounded-2xl shadow-xl p-2 text-right z-50">
+            <!-- موقعیت باز شدن اصلاح‌شده منوی اصلی خریدار -->
+            <div id="dropdown-menu" class="hidden absolute left-0 top-12 w-64 bg-white border border-[#e5d5c5] rounded-2xl shadow-xl p-2 text-right z-50">
                 <button onclick="navigateTo('showcase'); filterCategory('all')" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl transition-colors cursor-pointer">✨ نمایش همه مجموعه‌ها</button>
                 <button onclick="navigateTo('cart')" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl transition-colors font-medium flex justify-between items-center cursor-pointer">
                     <span>🛒 سبد خرید شما</span>
@@ -77,22 +84,25 @@
                 <button onclick="navigateTo('showcase'); filterCategory('stock')" class="w-full text-right px-4 py-2 text-xs text-emerald-700 hover:bg-stone-50 rounded-xl transition-colors font-medium cursor-pointer">📦 موجودی ها</button>
                 
                 <div class="border-t border-stone-100 my-1.5"></div>
-                <button onclick="showVipModal()" class="w-full text-right px-4 py-2 text-xs text-amber-800 bg-amber-50/60 rounded-xl transition-colors font-medium cursor-pointer">👑 اشتراک vip</button>
+                <button onclick="showVipModal()" class="w-full text-right px-4 py-2 text-xs text-amber-800 bg-amber-50/60 rounded-xl transition-colors font-medium cursor-pointer flex items-center justify-between">
+                    <span>👑 اشتراک VIP</span>
+                </button>
                 
                 <div class="border-t border-stone-100 my-1.5"></div>
                 <div class="px-4 py-1.5 text-xs text-[#a68015] font-bold">طلاهای مینیمال ✨</div>
-                <button onclick="navigateTo('showcase'); filterCategory('دستبند')" class="w-full text-right pr-8 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer">- دستبند ها</button>
-                <button onclick="navigateTo('showcase'); filterCategory('گوشواره')" class="w-full text-right pr-8 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer">- گوشواره ها</button>
-                <button onclick="navigateTo('showcase'); filterCategory('انگشتر')" class="w-full text-right pr-8 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer">- انگشتر ها</button>
-                <button onclick="navigateTo('showcase'); filterCategory('گردنبند')" class="w-full text-right pr-8 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer">- گردنبند ها</button>
+                <button onclick="navigateTo('showcase'); filterCategory('دستبند')" class="w-full text-right pr-6 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center gap-1"><span>-</span><span>دستبند ها</span></button>
+                <button onclick="navigateTo('showcase'); filterCategory('گوشواره')" class="w-full text-right pr-6 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center gap-1"><span>-</span><span>گوشواره ها</span></button>
+                <button onclick="navigateTo('showcase'); filterCategory('انگشتر')" class="w-full text-right pr-6 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center gap-1"><span>-</span><span>انگشتر ها</span></button>
+                <button onclick="navigateTo('showcase'); filterCategory('گردنبند')" class="w-full text-right pr-6 pl-4 py-1.5 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center gap-1"><span>-</span><span>گردنبند ها</span></button>
                 
                 <div class="border-t border-stone-100 my-1.5"></div>
-                <button onclick="showAboutUs()" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer">درباره‌ی ماℹ️</button>
-                <button onclick="showSupportModal()" class="w-full text-right px-4 py-2 text-xs text-blue-700 hover:bg-stone-50 rounded-xl cursor-pointer">پشتیبانی ☎️</button>
-                <button onclick="logout()" class="w-full text-right px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 rounded-xl font-medium mt-1 cursor-pointer">خروج🚪</button>
+                <button onclick="showAboutUs()" class="w-full text-right px-4 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center justify-between"><span>درباره‌ی ما</span><span>ℹ️</span></button>
+                <button onclick="showSupportModal()" class="w-full text-right px-4 py-2 text-xs text-blue-700 hover:bg-stone-50 rounded-xl cursor-pointer flex items-center justify-between"><span>پشتیبانی</span><span>☎️</span></button>
+                <button onclick="logout()" class="w-full text-right px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 rounded-xl font-medium mt-1 cursor-pointer flex items-center justify-between"><span>خروج از حساب</span><span>🚪</span></button>
             </div>
         </div>
 
+        <!-- هدر بالایی ثابت ویترین -->
         <header class="flex flex-col sm:flex-row justify-between items-center pb-6 border-b border-stone-200 mb-6 gap-4 pl-28 pr-14">
             <div class="text-right">
                 <h1 onclick="navigateTo('showcase')" class="text-3xl font-light tracking-widest text-[#a68015] uppercase drop-shadow-sm cursor-pointer">SAMA ZARRIN</h1>
@@ -113,7 +123,9 @@
             </div>
         </header>
 
+        <!-- ================= صفحه ۱: ویترین محصولات ================= -->
         <div id="page-showcase" class="page-section space-y-6">
+            <!-- فیلترها و جستجو -->
             <div id="customer-filter-area" class="bg-white border border-[#e5d5c5] rounded-2xl p-5 shadow-sm text-right grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-[11px] text-stone-500 font-medium mb-1.5">🔍 جستجوی نام کالا</label>
@@ -140,9 +152,11 @@
                     </label>
                 </div>
             </div>
+            <!-- اسلایدرها -->
             <div id="sliders-container" class="space-y-8"></div>
         </div>
 
+        <!-- ================= صفحه ۲: سبد خرید کاربران ================= -->
         <div id="page-cart" class="page-section hidden space-y-6 text-right">
             <div class="flex justify-between items-center border-b border-stone-200 pb-3">
                 <h2 class="text-xl font-medium text-[#a68015] flex items-center gap-2">🛒 سبد خرید و پیش‌فاکتور شما</h2>
@@ -150,8 +164,10 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                <!-- لیست آیتم‌های سبد خرید -->
                 <div id="cart-items-list" class="md:col-span-2 space-y-3"></div>
                 
+                <!-- فاکتور مالی نهایی پرداختی -->
                 <div class="bg-white border border-[#e5d5c5] rounded-3xl p-6 space-y-4 shadow-sm">
                     <h3 class="text-sm font-bold text-stone-800 border-b border-stone-100 pb-2">📊 خلاصه فاکتور خرید</h3>
                     <div class="space-y-2.5 text-xs text-stone-600">
@@ -168,6 +184,7 @@
             </div>
         </div>
 
+        <!-- ================= صفحه ۳: پنل مدیریت کالاها ================= -->
         <div id="page-admin" class="page-section hidden bg-white border border-[#e5d5c5] rounded-3xl p-6 shadow-md space-y-6 text-right">
             <h3 class="text-md font-medium text-[#a68015]">🛠️ مدیریت ویترین و مشتریان سما زرین</h3>
             <form onsubmit="addNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-b border-stone-100 pb-6">
@@ -209,37 +226,39 @@
             </div>
         </div>
 
+        <!-- 👑 مودال مقایسه‌ای اشتراک VIP (کاملاً اصلاح‌شده طبق ساختار تصویر) -->
         <div id="vip-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-xl w-full text-right space-y-6 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-stone-100 pb-3">
                     <h3 class="text-lg font-medium text-[#a68015]">👑 مزایای اشتراک کاربری VIP</h3>
                     <button onclick="closeVipModal()" class="text-stone-400 text-sm cursor-pointer hover:text-stone-600">✕</button>
                 </div>
-                <div class="overflow-x-auto rounded-2xl border border-stone-200 bg-white">
-                    <table class="w-full text-right text-xs">
+                <div class="overflow-hidden rounded-2xl border border-stone-200 bg-white">
+                    <table class="w-full text-right table-fixed border-collapse">
                         <thead>
                             <tr class="bg-stone-50 text-[#a68015] border-b border-stone-200">
-                                <th class="p-4 font-bold text-right">ویژگی‌ها</th>
-                                <th class="p-4 text-center font-bold">عادی</th>
-                                <th class="p-4 text-center font-bold text-amber-700">VIP 👑</th>
+                                <th class="p-4 font-bold text-right text-xs w-1/2 border-l border-stone-200">ویژگی‌ها</th>
+                                <th class="p-4 text-center font-bold text-xs w-1/4 border-l border-stone-200">عادی</th>
+                                <th class="p-4 text-center font-bold text-xs w-1/4 text-amber-700">👑 VIP</th>
                             </tr>
                         </thead>
                         <tbody class="text-stone-700 divide-y divide-stone-100">
-                            <tr>
-                                <td class="p-4 text-right">۲٪ تخفیف روی سود تمامی اجناس</td>
-                                <td class="p-4 text-center text-rose-600 font-medium">❌ ندارد</td>
-                                <td class="p-4 text-center text-emerald-700 font-bold">✅ فعال</td>
+                            <tr class="hover:bg-stone-50/50">
+                                <td class="p-4 text-right text-xs font-medium border-l border-stone-200">۲٪ تخفیف روی سود تمامی اجناس</td>
+                                <td class="p-4 text-center text-xs text-rose-600 font-medium border-l border-stone-200" dir="rtl">❌ ندارد</td>
+                                <td class="p-4 text-center text-xs text-emerald-700 font-bold" dir="rtl">✅ فعال</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex gap-3 pt-2">
                     <button onclick="activateVip()" class="flex-1 bg-gradient-to-r from-[#b89327] to-[#a68015] text-white text-xs font-bold py-3 rounded-xl shadow-md cursor-pointer">👑 ارتقای حساب</button>
                     <button onclick="closeVipModal()" class="px-6 bg-stone-900 text-white text-xs py-3 rounded-xl cursor-pointer">بستن</button>
                 </div>
             </div>
         </div>
 
+        <!-- 📋 مودال اختصاصی فرم نهایی ثبت مشخصات سفارش -->
         <div id="order-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-md w-full text-right space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-stone-100 pb-2">
@@ -264,6 +283,7 @@
             </div>
         </div>
 
+        <!-- ☎️ مودال صفحه پشتیبانی -->
         <div id="support-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-sm w-full text-right space-y-5 shadow-2xl">
                 <button onclick="closeSupportModal()" class="text-stone-400 text-sm float-left cursor-pointer hover:text-stone-600">✕</button>
@@ -275,6 +295,7 @@
             </div>
         </div>
 
+        <!-- ℹ️ درباره ما -->
         <div id="about-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div class="bg-white border border-[#e5d5c5] p-6 rounded-3xl max-w-md w-full text-right space-y-5 shadow-2xl">
                 <h3 class="text-lg font-medium text-[#a68015]">درباره گالری سما زرین</h3>
@@ -303,7 +324,6 @@
         let currentFilter = 'all';
         let selectedImageBase64 = ""; 
 
-        // بستن دراپ داون‌ها با کلیک روی بیرون
         window.addEventListener('click', function() {
             document.getElementById('dropdown-menu').classList.add('hidden');
             const adminMenu = document.getElementById('admin-dropdown-menu');
