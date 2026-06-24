@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>گالری طلا و جواهر سما زرین | SAMA ZARRIN</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <style>
         .horizontal-slider::-webkit-scrollbar { display: none; }
@@ -189,6 +189,33 @@
         </div>
 
         <div id="page-admin" class="page-section hidden space-y-8 text-right">
+            <div class="bg-gradient-to-r from-stone-900 to-stone-950 p-6 rounded-3xl border border-amber-500/20 text-right space-y-4 shadow-xl">
+                <h3 class="text-md font-medium text-amber-400 flex items-center gap-2">🤖 دستیار هوش مصنوعی و تغییر آنی سایت روی گیت‌هاب</h3>
+                <p class="text-[11px] text-stone-400">دستور خود را وارد کنید تا هوش مصنوعی کل کدهای ریپازیتوری شما را بازنویسی و مستقیماً روی گیت‌هاب کامیت و آپدیت کند.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-amber-400 block mb-1">GitHub Personal Access Token (Classic)</label>
+                        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" class="w-full p-3 rounded-xl bg-stone-800 text-white font-mono text-xs border border-stone-700 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-amber-400 block mb-1">مسیر ریپازیتوری گیت‌هاب (Username/Repo)</label>
+                        <input type="text" id="gh-repo" placeholder="faribabam/samazarrin" class="w-full p-3 rounded-xl bg-stone-800 text-white font-mono text-xs border border-stone-700 text-left focus:outline-none" dir="ltr">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] text-stone-300 block mb-1">✏️ چه تغییری می‌خواهید در کدنویسی‌ها و ساختار سایت ایجاد شود؟</label>
+                    <textarea id="ai-command" rows="3" placeholder="مثلاً: دکمه افزودن به سبد خرید را کمی بزرگ‌تر کن و رنگش را به طلایی تیره تغییر بده..." class="w-full p-3 rounded-xl bg-stone-800 text-white text-xs border border-stone-700 focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="askAiToUpdateGitHub()" id="ai-submit-btn" class="bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 text-xs font-bold px-6 py-3 rounded-xl shadow-md hover:from-amber-400 transition-all cursor-pointer">
+                        🚀 پردازش و آپدیت آنی سایت روی گیت‌هاب
+                    </button>
+                </div>
+            </div>
+
             <div class="bg-white border border-[#e5d5c5] rounded-3xl p-6 shadow-md space-y-6">
                 <h3 class="text-md font-medium text-[#a68015] flex items-center gap-1">🛠️ مدیریت ویترین و محصولات گالری</h3>
                 <form onsubmit="addNewProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 border-b border-stone-100 pb-6">
@@ -1368,6 +1395,77 @@
                 updateCartBadges();
                 navigateTo('showcase');
                 startLiveGoldRate();
+            }
+        }
+
+        // 🤖 تابع پردازش هوش مصنوعی و ادیت خودکار گیت‌هاب
+        async function askAiToUpdateGitHub() {
+            const token = document.getElementById('gh-token').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const command = document.getElementById('ai-command').value.trim();
+            const btn = document.getElementById('ai-submit-btn');
+
+            if (!token || !repo || !command) {
+                alert("❌ لطفاً توکن گیت‌هاب، آدرس ریپازیتوری و دستور تغییر را وارد کنید.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ در حال پردازش توسط هوش مصنوعی و اتصال به گیت‌هاب...";
+
+            try {
+                const ghUrl = `https://api.github.com/repos/${repo}/contents/index.html`;
+                const ghResponse = await fetch(ghUrl, {
+                    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+
+                if (!ghResponse.ok) throw new Error("فایل در گیت‌هاب یافت نشد. ریپازیتوری و توکن را مجدد بررسی کنید.");
+                const fileData = await ghResponse.json();
+                const currentCode = decodeURIComponent(escape(atob(fileData.content)));
+                const fileSha = fileData.sha;
+
+                // فراخوانی مستقیم API رسمی جمینی برای پردازش ساختار فرانت‌اند و اعمال ادیت در سورس کد
+                const geminiApiKey = BOT_TOKEN; 
+                const aiPrompt = `You are an expert web developer. Your task is to update the provided full HTML source code of this website based on the user's command. Return ONLY the fully complete, operational, and modified HTML code. Do not wrap it in markdown code blocks like \`\`\`html or add any explanations.\n\nUser Command:\n${command}\n\nFull HTML Source Code:\n${currentCode}`;
+                
+                const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: aiPrompt }] }] })
+                });
+
+                if (!aiResponse.ok) throw new Error("پاسخی از سرور هوش مصنوعی دریافت نشد.");
+                const aiResult = await aiResponse.json();
+                let updatedCode = aiResult.candidates[0].content.parts[0].text.trim();
+                
+                if (updatedCode.startsWith("```html")) {
+                    updatedCode = updatedCode.replace(/```html|```/g, "").trim();
+                }
+
+                const updatedContentBase64 = btoa(unescape(encodeURIComponent(updatedCode)));
+                
+                const updateResponse = await fetch(ghUrl, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: `🤖 AI Automator: ${command.substring(0, 60)}...`,
+                        content: updatedContentBase64,
+                        sha: fileSha
+                    })
+                });
+
+                if (updateResponse.ok) {
+                    alert("✅ هوش مصنوعی تغییرات را با موفقیت روی کد اعمال کرد و فایل در گیت‌هاب آپدیت شد! تغییرات تا لحظاتی دیگر روی وبسایت اعمال می‌شود.");
+                    document.getElementById('ai-command').value = "";
+                } else {
+                    throw new Error("خطا در ارسال و کامیت کد جدید روی گیت‌هاب.");
+                }
+
+            } catch (error) {
+                alert("❌ خطا: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "🚀 پردازش و آپدیت آنی سایت روی گیت‌هاب";
             }
         }
 
